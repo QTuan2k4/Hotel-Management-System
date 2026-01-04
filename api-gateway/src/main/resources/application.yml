@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+security:
+  jwt:
+    # IMPORTANT: change this secret in real projects. Must be >= 32 bytes for HS256.
+    secret: "CHANGE_ME_SUPER_SECRET_KEY_32_BYTES_MINIMUM____"
+    issuer: "hms"
+
+gateway:
+  services:
+    auth: "http://localhost:9000"
+    rooms: "http://localhost:9001"
+    bookings: "http://localhost:9002"
+    invoices: "http://localhost:9003"
+    payments: "http://localhost:9004"
+    reports: "http://localhost:9005"
+    notify: "http://localhost:9006"
+  security:
+    internalKey: "CHANGE_ME_INTERNAL_KEY"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

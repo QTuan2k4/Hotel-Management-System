@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HMS - Admin Bookings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+  <div th:replace="fragments/nav :: nav"></div>
+
+  <main class="container py-4">
+    <h3>Quản lý Booking</h3>
+
+    <form class="row g-2 mt-2" method="get" th:action="@{/admin/bookings}">
+      <div class="col-auto">
+        <select class="form-select" name="status">
+          <option value="">-- Tất cả trạng thái --</option>
+          <option value="PENDING_APPROVAL" th:selected="${status=='PENDING_APPROVAL'}">PENDING_APPROVAL</option>
+          <option value="APPROVED" th:selected="${status=='APPROVED'}">APPROVED</option>
+          <option value="REJECTED" th:selected="${status=='REJECTED'}">REJECTED</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-primary">Lọc</button>
+      </div>
+    </form>
+
+    <div class="mt-3">
+      <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    </div>
+
+    <div class="table-responsive mt-2">
+      <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>UserId</th>
+          <th>RoomId</th>
+          <th>Nhận</th>
+          <th>Trả</th>
+          <th>Status</th>
+          <th>Tổng tiền</th>
+          <th>Actions</th>  
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="b : ${bookings}">
+          <td th:text="${b.id}"></td>
+          <td th:text="${b.userId}"></td>
+          <td th:text="${b.roomId}"></td>
+          <td th:text="${b.checkInDate}"></td>
+          <td th:text="${b.checkOutDate}"></td>
+          <td>
+            <span class="badge bg-warning text-dark" th:if="${b.status.name()=='PENDING_APPROVAL'}">PENDING</span>
+            <span class="badge bg-success" th:if="${b.status.name()=='APPROVED'}">APPROVED</span>
+            <span class="badge bg-danger" th:if="${b.status.name()=='REJECTED'}">REJECTED</span>
+            <span class="badge bg-secondary" th:if="${b.status.name()!='PENDING_APPROVAL' and b.status.name()!='APPROVED' and b.status.name()!='REJECTED'}"
+                  th:text="${b.status}"></span>
+          </td>
+          <td th:text="${b.pricePerNightSnapshot}">0</td>
+          <td class="d-flex gap-2">
+            <form th:if="${b.status.name()=='PENDING_APPROVAL'}"
+                  th:action="@{'/admin/bookings/' + ${b.id} + '/approve'}"
+                  method="post">
+              <button class="btn btn-sm btn-success" type="submit">Approve</button>
+            </form>
+            <form th:if="${b.status.name()=='PENDING_APPROVAL'}"
+                  th:action="@{'/admin/bookings/' + ${b.id} + '/reject'}"
+                  method="post">
+              <button class="btn btn-sm btn-danger" type="submit">Reject</button>
+            </form>
+            <span th:if="${b.status.name()!='PENDING_APPROVAL'}" class="text-muted">—</span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

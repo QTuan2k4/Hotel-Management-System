@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="nav">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/}">HMS</a>
+
+    <div class="d-flex gap-2">
+      <!-- ✅ Link Phase 3: Booking của tôi -->
+      <a class="btn btn-outline-info btn-sm"
+         th:if="${sessionAuth != null and sessionAuth.loggedIn}"
+         th:href="@{/bookings/my}">
+        Booking của tôi
+      </a>
+
+      <a class="btn btn-outline-light btn-sm"
+         th:if="${sessionAuth != null and sessionAuth.loggedIn}"
+         th:href="@{/logout}">
+        Logout (<span th:text="${sessionAuth.username}"></span>)
+      </a>
+
+      <a class="btn btn-outline-light btn-sm"
+         th:unless="${sessionAuth != null and sessionAuth.loggedIn}"
+         th:href="@{/login}">
+        Login
+      </a>
+	  <a class="btn btn-warning btn-sm"
+	   th:if="${sessionAuth != null and sessionAuth.admin}"
+	   th:href="@{/admin/bookings}">Admin</a>
+      <a class="btn btn-warning btn-sm"
+         th:if="${sessionAuth != null and sessionAuth.admin}"
+         th:href="@{/admin/rooms}">
+        Admin
+      </a>
+    </div>
+  </div>
+</nav>
+</body>
+</html>
