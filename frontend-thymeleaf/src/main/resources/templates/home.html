@@ -5,25 +5,64 @@
 
 <body>
   <div th:replace="~{fragments/nav :: nav}"></div>
-  <div class="container">
-    <h1 style="margin: 30px 0;">Available Rooms</h1>
 
-    <div th:if="${#lists.isEmpty(rooms)}" class="card">
-      <p>No rooms available at the moment.</p>
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h2 fw-bold text-primary mb-1">
+          <i class="bi bi-building me-2"></i>Available Rooms
+        </h1>
+        <p class="text-muted mb-0">Find your perfect accommodation</p>
+      </div>
     </div>
 
-    <div class="grid">
-      <div th:each="room : ${rooms}" class="card">
-        <h3 th:text="${room.name}">Room Name</h3>
-        <p><strong>Code:</strong> <span th:text="${room.code}">R101</span></p>
-        <p><strong>Type:</strong> <span th:text="${room.type}">DELUXE</span></p>
-        <p><strong>Price:</strong> $<span th:text="${room.pricePerNight}">100</span>/night</p>
-        <p><strong>Status:</strong> <span th:text="${room.status}">AVAILABLE</span></p>
-        <p th:if="${room.description}" th:text="${room.description}" style="color: #666; margin: 10px 0;"></p>
-        <a th:href="@{/rooms/{id}(id=${room.id})}" class="btn">View Details</a>
+    <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info">
+      <i class="bi bi-info-circle me-2"></i>
+      No rooms available at the moment. Please check back later.
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div th:each="room : ${rooms}" class="col">
+        <div class="card room-card h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h5 class="card-title fw-bold mb-0" th:text="${room.name}">Room Name</h5>
+              <span class="badge badge-status" th:classappend="'status-' + ${room.status.toLowerCase()}"
+                th:text="${room.status}">AVAILABLE</span>
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex align-items-center text-muted mb-1">
+                <i class="bi bi-hash me-2"></i>
+                <span>Code: </span>
+                <strong class="ms-1" th:text="${room.code}">R101</strong>
+              </div>
+              <div class="d-flex align-items-center text-muted mb-1">
+                <i class="bi bi-tag me-2"></i>
+                <span>Type: </span>
+                <strong class="ms-1" th:text="${room.type}">DELUXE</strong>
+              </div>
+            </div>
+
+            <p th:if="${room.description}" class="card-text text-muted small" th:text="${room.description}"></p>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+              <div class="room-price">
+                <span>$</span><span th:text="${room.pricePerNight}">100</span>
+                <small class="text-muted fw-normal">/night</small>
+              </div>
+              <a th:href="@{/rooms/{id}(id=${room.id})}" class="btn btn-primary">
+                <i class="bi bi-eye me-1"></i>View Details
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

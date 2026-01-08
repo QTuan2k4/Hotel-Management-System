@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Admin - Room Form')}"></head>
+
+<body>
+    <div th:replace="~{fragments/nav :: nav}"></div>
+
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <a href="/admin/rooms" class="text-decoration-none text-muted small">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Room List
+                </a>
+
+                <div class="card mt-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-building me-2"></i>
+                            <span th:if="${mode == 'create'}">Add New Room</span>
+                            <span th:if="${mode == 'edit'}">Edit Room</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${error}" class="alert alert-danger d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <form th:action="${mode == 'create'} ? @{/admin/rooms} : @{/admin/rooms/{id}(id=${room.id})}"
+                            method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Room Code *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                        <input type="text" name="code" class="form-control" th:value="${room.code}"
+                                            placeholder="e.g. R101" required th:readonly="${mode == 'edit'}">
+                                    </div>
+                                    <small th:if="${mode == 'edit'}" class="text-muted">Code cannot be changed</small>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Room Name *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                        <input type="text" name="name" class="form-control" th:value="${room.name}"
+                                            placeholder="e.g. Deluxe Suite" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Room Type *</label>
+                                    <select name="type" class="form-select" required>
+                                        <option value="">Select type...</option>
+                                        <option value="STANDARD" th:selected="${room.type == 'STANDARD'}">Standard
+                                        </option>
+                                        <option value="DELUXE" th:selected="${room.type == 'DELUXE'}">Deluxe</option>
+                                        <option value="SUITE" th:selected="${room.type == 'SUITE'}">Suite</option>
+                                        <option value="VIP" th:selected="${room.type == 'VIP'}">VIP</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Price per Night ($) *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                        <input type="number" name="pricePerNight" class="form-control"
+                                            th:value="${room.pricePerNight}" placeholder="100" step="0.01" min="0"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-medium">Status *</label>
+                                    <select name="status" class="form-select" required>
+                                        <option value="AVAILABLE"
+                                            th:selected="${room.status == 'AVAILABLE' or room.status == null}">Available
+                                        </option>
+                                        <option value="MAINTENANCE" th:selected="${room.status == 'MAINTENANCE'}">
+                                            Maintenance</option>
+                                        <option value="DISABLED" th:selected="${room.status == 'DISABLED'}">Disabled
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label fw-medium">Description</label>
+                                    <textarea name="description" class="form-control" rows="3"
+                                        th:text="${room.description}" placeholder="Room description..."></textarea>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    <span th:if="${mode == 'create'}">Create Room</span>
+                                    <span th:if="${mode == 'edit'}">Save Changes</span>
+                                </button>
+                                <a href="/admin/rooms" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
