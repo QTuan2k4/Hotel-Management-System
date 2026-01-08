@@ -31,9 +31,4 @@ public class RoomPublicController {
     public List<RoomImageDto> images(@PathVariable Long id) {
         return roomService.listImages(id);
     }
-
-    @GetMapping("/ping")
-    public String ping() {
-        return "room-service: OK";
-    }
 }

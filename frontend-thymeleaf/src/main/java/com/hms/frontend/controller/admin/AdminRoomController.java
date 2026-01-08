@@ -4,10 +4,8 @@ import com.hms.common.dto.room.RoomDto;
 import com.hms.frontend.api.GatewayApiClient;
 import com.hms.frontend.session.SessionAuth;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -63,7 +61,8 @@ public class AdminRoomController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute("room") RoomDto room, HttpSession session, Model model) {
+    public String update(@PathVariable Long id, @ModelAttribute("room") RoomDto room, HttpSession session,
+            Model model) {
         SessionAuth auth = requireAdmin(session);
         try {
             api.put("/api/admin/rooms/" + id, room, RoomDto.class, auth);

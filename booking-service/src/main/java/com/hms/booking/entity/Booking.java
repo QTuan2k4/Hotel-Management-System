@@ -10,13 +10,17 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "bookings", indexes = {
-        @Index(name="idx_room", columnList = "roomId"),
-        @Index(name="idx_user", columnList = "userId")
+        @Index(name = "idx_room", columnList = "roomId"),
+        @Index(name = "idx_user", columnList = "userId")
 })
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Booking {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -37,11 +41,13 @@ public class Booking {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    
+
     @Column(precision = 12, scale = 2)
     private BigDecimal pricePerNightSnapshot;
 
     private LocalDateTime approvedAt;
     private Long approvedBy;
 
+    private LocalDateTime checkedInAt;
+    private LocalDateTime checkedOutAt;
 }

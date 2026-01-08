@@ -23,20 +23,28 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Role adminRole = roleRepo.findByName("ADMIN").orElseGet(() -> roleRepo.save(Role.builder().name("ADMIN").build()));
-        Role userRole = roleRepo.findByName("USER").orElseGet(() -> roleRepo.save(Role.builder().name("USER").build()));
+        // Seed roles
+        Role adminRole = roleRepo.findByName("ADMIN").orElseGet(() -> {
+            Role r = Role.builder().name("ADMIN").build();
+            return roleRepo.save(r);
+        });
+        Role userRole = roleRepo.findByName("USER").orElseGet(() -> {
+            Role r = Role.builder().name("USER").build();
+            return roleRepo.save(r);
+        });
 
-        // default admin user: admin / admin123
-        userRepo.findByUsername("admin").orElseGet(() -> {
-            User u = User.builder()
+        // Seed admin user
+        if (!userRepo.existsByUsername("admin")) {
+            User admin = User.builder()
                     .username("admin")
                     .passwordHash(passwordEncoder.encode("admin123"))
-                    .email("admin@local")
+                    .email("admin@hotel.local")
                     .status("ACTIVE")
                     .build();
-            u.getRoles().add(adminRole);
-            u.getRoles().add(userRole);
-            return userRepo.save(u);
-        });
+            admin.getRoles().add(adminRole);
+            admin.getRoles().add(userRole);
+            userRepo.save(admin);
+            System.out.println("Created default admin user: admin/admin123");
+        }
     }
 }

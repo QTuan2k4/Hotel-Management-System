@@ -1,39 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="nav">
-  <div class="container">
-    <a class="navbar-brand" th:href="@{/}">HMS</a>
-
-    <div class="d-flex gap-2">
-      <!-- ✅ Link Phase 3: Booking của tôi -->
-      <a class="btn btn-outline-info btn-sm"
-         th:if="${sessionAuth != null and sessionAuth.loggedIn}"
-         th:href="@{/bookings/my}">
-        Booking của tôi
-      </a>
-
-      <a class="btn btn-outline-light btn-sm"
-         th:if="${sessionAuth != null and sessionAuth.loggedIn}"
-         th:href="@{/logout}">
-        Logout (<span th:text="${sessionAuth.username}"></span>)
-      </a>
-
-      <a class="btn btn-outline-light btn-sm"
-         th:unless="${sessionAuth != null and sessionAuth.loggedIn}"
-         th:href="@{/login}">
-        Login
-      </a>
-	  <a class="btn btn-warning btn-sm"
-	   th:if="${sessionAuth != null and sessionAuth.admin}"
-	   th:href="@{/admin/bookings}">Admin</a>
-      <a class="btn btn-warning btn-sm"
-         th:if="${sessionAuth != null and sessionAuth.admin}"
-         th:href="@{/admin/rooms}">
-        Admin
-      </a>
+<nav class="nav" th:fragment="nav">
+  <div class="nav-container">
+    <a href="/" style="font-size: 1.2em; font-weight: bold;">🏨 Hotel Management</a>
+    <div>
+      <a href="/">Rooms</a>
+      <th:block th:if="${auth != null and auth.loggedIn}">
+        <a href="/bookings/my">My Bookings</a>
+        <a href="/invoices/my">My Invoices</a>
+        <th:block th:if="${auth.admin}">
+          <a href="/admin" style="color: #ffc107;">Admin</a>
+        </th:block>
+        <span style="margin-left: 20px;">👤 [[${auth.username}]]</span>
+        <a href="/logout">Logout</a>
+      </th:block>
+      <th:block th:unless="${auth != null and auth.loggedIn}">
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      </th:block>
     </div>
   </div>
 </nav>
-</body>
+
 </html>

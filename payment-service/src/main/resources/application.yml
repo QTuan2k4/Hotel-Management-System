@@ -13,6 +13,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+clients:
+  gatewayBaseUrl: http://localhost:8081
+  internalKey: "CHANGE_ME_INTERNAL_KEY"
+
+app:
+  frontendBaseUrl: http://localhost:8080
+
 management:
   endpoints:
     web:

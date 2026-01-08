@@ -1,0 +1,32 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(active)" class="admin-sidebar glass">
+  <div class="mb-3">
+    <div class="hms-title"><i class="fa-solid fa-shield-halved me-2"></i>Admin</div>
+    <div class="hms-sub small">Manage rooms, bookings, invoices</div>
+  </div>
+
+  <div class="d-grid gap-2">
+    <a class="admin-link" th:classappend="${active=='dash'} ? ' active' : ''" th:href="@{/admin}">
+      <i class="fa-solid fa-gauge"></i> Dashboard
+    </a>
+    <a class="admin-link" th:classappend="${active=='rooms'} ? ' active' : ''" th:href="@{/admin/rooms}">
+      <i class="fa-solid fa-door-open"></i> Rooms
+    </a>
+    <a class="admin-link" th:classappend="${active=='bookings'} ? ' active' : ''" th:href="@{/admin/bookings}">
+      <i class="fa-solid fa-calendar-check"></i> Bookings
+    </a>
+    <a class="admin-link" th:classappend="${active=='invoices'} ? ' active' : ''" th:href="@{/admin/invoices}">
+      <i class="fa-solid fa-file-invoice-dollar"></i> Invoices
+    </a>
+  </div>
+
+  <hr class="my-3"/>
+
+  <a class="admin-link" th:href="@{/}">
+    <i class="fa-solid fa-house"></i> Back to Home
+  </a>
+</aside>
+</body>
+</html>

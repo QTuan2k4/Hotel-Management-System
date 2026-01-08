@@ -1,0 +1,20 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="topbar(title)" class="d-flex align-items-center justify-content-between mb-3">
+  <div>
+    <div class="hms-title" th:text="${title}">Admin</div>
+    <div class="hms-sub">Overview & operations</div>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge badge-soft">
+      <i class="fa-solid fa-user me-1"></i>
+      <span th:text="${sessionAuth != null ? sessionAuth.username : 'guest'}"></span>
+    </span>
+    <a class="btn btn-outline-light btn-sm" th:href="@{/logout}" th:if="${sessionAuth != null and sessionAuth.loggedIn}">
+      Logout
+    </a>
+  </div>
+</div>
+</body>
+</html>

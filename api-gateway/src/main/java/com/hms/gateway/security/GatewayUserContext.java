@@ -13,11 +13,19 @@ public class GatewayUserContext {
         this.roles = roles;
     }
 
-    public long getUserId() { return userId; }
-    public String getUsername() { return username; }
-    public List<String> getRoles() { return roles; }
+    public long getUserId() {
+        return userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
 
     public boolean isAdmin() {
-        return roles != null && roles.stream().anyMatch(r -> "ADMIN".equalsIgnoreCase(r));
+        return roles != null && roles.contains("ADMIN");
     }
 }

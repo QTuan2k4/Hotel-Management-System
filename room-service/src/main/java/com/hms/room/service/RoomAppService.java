@@ -29,7 +29,8 @@ public class RoomAppService {
     }
 
     public RoomDto getRoom(Long id) {
-        Room r = roomRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
+        Room r = roomRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
         return toDto(r);
     }
 
@@ -59,12 +60,18 @@ public class RoomAppService {
 
     @Transactional
     public RoomDto update(Long id, RoomDto dto) {
-        Room r = roomRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
-        if (dto.getName() != null) r.setName(dto.getName());
-        if (dto.getType() != null) r.setType(dto.getType());
-        if (dto.getPricePerNight() != null) r.setPricePerNight(dto.getPricePerNight());
-        if (dto.getStatus() != null) r.setStatus(dto.getStatus());
-        if (dto.getDescription() != null) r.setDescription(dto.getDescription());
+        Room r = roomRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
+        if (dto.getName() != null)
+            r.setName(dto.getName());
+        if (dto.getType() != null)
+            r.setType(dto.getType());
+        if (dto.getPricePerNight() != null)
+            r.setPricePerNight(dto.getPricePerNight());
+        if (dto.getStatus() != null)
+            r.setStatus(dto.getStatus());
+        if (dto.getDescription() != null)
+            r.setDescription(dto.getDescription());
         return toDto(r);
     }
 
@@ -79,7 +86,8 @@ public class RoomAppService {
 
     @Transactional
     public RoomImageDto addImage(Long roomId, RoomImageDto dto) {
-        roomRepo.findById(roomId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
+        roomRepo.findById(roomId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
         if (dto.getUrl() == null || dto.getUrl().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "url is required");
         }

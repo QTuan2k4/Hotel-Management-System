@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Admin Dashboard')}"></head>
+
+<body>
+  <div th:replace="~{fragments/nav :: nav}"></div>
+  <div class="container">
+    <h1 style="margin: 30px 0;">Admin Dashboard</h1>
+
+    <div class="grid">
+      <a href="/admin/bookings" class="card" style="text-decoration: none; color: inherit;">
+        <h3>📋 Manage Bookings</h3>
+        <p>View and manage all bookings, approve/reject, check-in/out</p>
+      </a>
+      <a href="/admin/invoices" class="card" style="text-decoration: none; color: inherit;">
+        <h3>💳 Manage Invoices</h3>
+        <p>View all invoices and mark payments</p>
+      </a>
+    </div>
+  </div>
+</body>
+
+</html>

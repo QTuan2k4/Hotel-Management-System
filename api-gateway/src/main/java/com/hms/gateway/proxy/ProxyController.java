@@ -68,7 +68,8 @@ public class ProxyController {
 
             HttpHeaders out = new HttpHeaders();
             resp.getHeaders().forEach((k, v) -> {
-                if (!isHopByHopHeader(k)) out.put(k, v);
+                if (!isHopByHopHeader(k))
+                    out.put(k, v);
             });
 
             return ResponseEntity.status(resp.getStatusCode()).headers(out).body(resp.getBody());
@@ -78,7 +79,8 @@ public class ProxyController {
             HttpHeaders exHeaders = ex.getResponseHeaders();
             if (exHeaders != null) {
                 exHeaders.forEach((k, v) -> {
-                    if (!isHopByHopHeader(k)) out.put(k, v);
+                    if (!isHopByHopHeader(k))
+                        out.put(k, v);
                 });
             }
             return ResponseEntity.status(ex.getStatusCode()).headers(out).body(ex.getResponseBodyAsByteArray());
@@ -88,28 +90,31 @@ public class ProxyController {
     private HttpHeaders copyRequestHeaders(HttpServletRequest request) {
         HttpHeaders headers = new HttpHeaders();
         Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames == null) return headers;
+        if (headerNames == null)
+            return headers;
 
         while (headerNames.hasMoreElements()) {
             String name = headerNames.nextElement();
-            if (isHopByHopHeader(name)) continue;
+            if (isHopByHopHeader(name))
+                continue;
 
             Enumeration<String> values = request.getHeaders(name);
-            if (values == null) continue;
+            if (values == null)
+                continue;
 
             for (String v : Collections.list(values)) {
                 headers.add(name, v);
             }
         }
 
-        // Tránh lệch length khi RestTemplate tự set lại
         headers.remove(HttpHeaders.HOST);
         headers.remove(HttpHeaders.CONTENT_LENGTH);
         return headers;
     }
 
     private boolean isHopByHopHeader(String name) {
-        if (name == null) return false;
+        if (name == null)
+            return false;
         String n = name.toLowerCase();
         return n.equals("host")
                 || n.equals("connection")
@@ -123,7 +128,8 @@ public class ProxyController {
     }
 
     private String escapeJson(String s) {
-        if (s == null) return "";
+        if (s == null)
+            return "";
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Room Details')}"></head>
+
+<body>
+  <div th:replace="~{fragments/nav :: nav}"></div>
+  <div class="container">
+    <div class="card">
+      <a href="/" style="text-decoration: none;">← Back to Rooms</a>
+
+      <h1 style="margin: 20px 0;" th:text="${room.name}">Room Name</h1>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div>
+          <p><strong>Code:</strong> <span th:text="${room.code}">R101</span></p>
+          <p><strong>Type:</strong> <span th:text="${room.type}">DELUXE</span></p>
+          <p><strong>Price:</strong> $<span id="pricePerNight" th:text="${room.pricePerNight}">100</span>/night</p>
+          <p><strong>Status:</strong> <span th:text="${room.status}">AVAILABLE</span></p>
+          <p th:if="${room.description}" style="margin-top: 20px;" th:text="${room.description}"></p>
+        </div>
+
+        <div th:if="${auth != null and auth.loggedIn}">
+          <h3>Book This Room</h3>
+          <button id="openDatePicker" class="btn btn-success">📅 Select Dates to Book</button>
+        </div>
+        <div th:unless="${auth != null and auth.loggedIn}">
+          <p><a href="/login" class="btn">Login to Book</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date Picker Modal -->
+  <div id="datePickerModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000;">
+    <div
+      style="background: white; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 12px; position: relative;">
+      <button id="closeModal"
+        style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+
+      <h2 style="margin-bottom: 20px; color: #333;">Select Your Stay Dates</h2>
+      <p style="color: #666; margin-bottom: 15px;">Click on dates to select. <span style="color: #dc3545;">Red</span> =
+        Already booked</p>
+
+      <div id="dateGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px;">
+        <!-- Dates will be populated here -->
+      </div>
+
+      <div id="summary" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <p><strong>Selected Nights:</strong> <span id="nightCount">0</span></p>
+        <p><strong>Total:</strong> $<span id="totalPrice">0.00</span></p>
+      </div>
+
+      <form id="bookingForm" action="/bookings/create" method="post">
+        <input type="hidden" name="roomId" th:value="${room.id}">
+        <input type="hidden" name="checkInDate" id="checkInDateInput">
+        <input type="hidden" name="checkOutDate" id="checkOutDateInput">
+        <button type="submit" id="confirmBtn" class="btn btn-success" disabled style="width: 100%;">
+          Confirm Booking
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+    (function () {
+      const roomId = /*[[${room.id}]]*/ 1;
+      const pricePerNight = parseFloat(/*[[${room.pricePerNight}]]*/ 100);
+
+      const modal = document.getElementById('datePickerModal');
+      const dateGrid = document.getElementById('dateGrid');
+      const nightCountEl = document.getElementById('nightCount');
+      const totalPriceEl = document.getElementById('totalPrice');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const checkInInput = document.getElementById('checkInDateInput');
+      const checkOutInput = document.getElementById('checkOutDateInput');
+
+      let bookedDates = [];
+      let selectedDates = [];
+
+      // Open modal
+      document.getElementById('openDatePicker')?.addEventListener('click', async () => {
+        // Fetch booked dates
+        try {
+          const resp = await fetch('/api/bookings/booked-dates/' + roomId);
+          bookedDates = await resp.json();
+        } catch (e) {
+          bookedDates = [];
+        }
+        renderDates();
+        modal.style.display = 'block';
+      });
+
+      // Close modal
+      document.getElementById('closeModal')?.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      function renderDates() {
+        dateGrid.innerHTML = '';
+        const today = new Date();
+
+        for (let i = 0; i < 15; i++) {
+          const d = new Date(today);
+          d.setDate(d.getDate() + i + 1); // Start from tomorrow
+          const dateStr = d.toISOString().split('T')[0];
+          const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+          const dayNum = d.getDate();
+          const monthName = d.toLocaleDateString('en-US', { month: 'short' });
+
+          const isBooked = bookedDates.includes(dateStr);
+          const isSelected = selectedDates.includes(dateStr);
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.date = dateStr;
+          btn.innerHTML = `<div style="font-size: 12px;">${dayName}</div><div style="font-size: 18px; font-weight: bold;">${dayNum}</div><div style="font-size: 10px;">${monthName}</div>`;
+          btn.style.cssText = `
+            padding: 12px 8px;
+            border: 2px solid ${isBooked ? '#dc3545' : (isSelected ? '#28a745' : '#ddd')};
+            background: ${isBooked ? '#ffebee' : (isSelected ? '#d4edda' : 'white')};
+            border-radius: 8px;
+            cursor: ${isBooked ? 'not-allowed' : 'pointer'};
+            text-align: center;
+            transition: all 0.2s;
+          `;
+
+          if (!isBooked) {
+            btn.addEventListener('click', () => toggleDate(dateStr));
+          }
+
+          dateGrid.appendChild(btn);
+        }
+      }
+
+      function toggleDate(dateStr) {
+        const idx = selectedDates.indexOf(dateStr);
+        if (idx >= 0) {
+          selectedDates.splice(idx, 1);
+        } else {
+          selectedDates.push(dateStr);
+        }
+        selectedDates.sort();
+        updateSummary();
+        renderDates();
+      }
+
+      function updateSummary() {
+        const nights = selectedDates.length;
+        const total = nights * pricePerNight;
+
+        nightCountEl.textContent = nights;
+        totalPriceEl.textContent = total.toFixed(2);
+
+        if (nights > 0) {
+          // Set check-in as first selected date, check-out as last + 1
+          const minDate = new Date(selectedDates[0]);
+          const maxDate = new Date(selectedDates[selectedDates.length - 1]);
+          maxDate.setDate(maxDate.getDate() + 1); // Check-out is day after last night
+
+          checkInInput.value = selectedDates[0];
+          checkOutInput.value = maxDate.toISOString().split('T')[0];
+          confirmBtn.disabled = false;
+        } else {
+          checkInInput.value = '';
+          checkOutInput.value = '';
+          confirmBtn.disabled = true;
+        }
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,15 +1,11 @@
 package com.hms.frontend.api;
 
-import com.hms.common.dto.booking.BookingDto;
-import com.hms.common.dto.booking.CreateBookingRequest;
 import com.hms.frontend.config.FrontendProperties;
 import com.hms.frontend.session.SessionAuth;
-
-
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
 
 @Component
 public class GatewayApiClient {
@@ -22,45 +18,73 @@ public class GatewayApiClient {
         this.props = props;
     }
 
-    public <T> T get(String path, Class<T> type, SessionAuth auth) {
-        return exchange(path, HttpMethod.GET, null, type, auth).getBody();
+    public <T> T get(String path, Class<T> responseType, SessionAuth auth) {
+        String url = props.getGatewayBaseUrl() + path;
+        HttpHeaders headers = headers(auth);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<T> resp = restTemplate.exchange(url, HttpMethod.GET, entity, responseType);
+            return resp.getBody();
+        } catch (HttpStatusCodeException e) {
+            return null;
+        }
     }
 
-    public <T> T post(String path, Object body, Class<T> type, SessionAuth auth) {
-        return exchange(path, HttpMethod.POST, body, type, auth).getBody();
+    /**
+     * GET request without authentication (for public endpoints)
+     */
+    public <T> T getPublic(String path, Class<T> responseType) {
+        String url = props.getGatewayBaseUrl() + path;
+        try {
+            ResponseEntity<T> resp = restTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, responseType);
+            return resp.getBody();
+        } catch (HttpStatusCodeException e) {
+            return null;
+        }
     }
 
-    public <T> T put(String path, Object body, Class<T> type, SessionAuth auth) {
-        return exchange(path, HttpMethod.PUT, body, type, auth).getBody();
+    public <T, R> T post(String path, R body, Class<T> responseType, SessionAuth auth) {
+        String url = props.getGatewayBaseUrl() + path;
+        HttpHeaders headers = headers(auth);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<R> entity = new HttpEntity<>(body, headers);
+        try {
+            ResponseEntity<T> resp = restTemplate.exchange(url, HttpMethod.POST, entity, responseType);
+            return resp.getBody();
+        } catch (HttpStatusCodeException e) {
+            return null;
+        }
+    }
+
+    public <T, R> T put(String path, R body, Class<T> responseType, SessionAuth auth) {
+        String url = props.getGatewayBaseUrl() + path;
+        HttpHeaders headers = headers(auth);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<R> entity = new HttpEntity<>(body, headers);
+        try {
+            ResponseEntity<T> resp = restTemplate.exchange(url, HttpMethod.PUT, entity, responseType);
+            return resp.getBody();
+        } catch (HttpStatusCodeException e) {
+            return null;
+        }
     }
 
     public void delete(String path, SessionAuth auth) {
-        exchange(path, HttpMethod.DELETE, null, String.class, auth);
-    }
-
-    private <T> ResponseEntity<T> exchange(String path, HttpMethod method, Object body, Class<T> type, SessionAuth auth) {
         String url = props.getGatewayBaseUrl() + path;
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        if (auth != null && auth.isLoggedIn()) {
-            headers.setBearerAuth(auth.getToken());
+        HttpHeaders headers = headers(auth);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        try {
+            restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+        } catch (HttpStatusCodeException e) {
+            // ignore
         }
-
-        HttpEntity<Object> entity = new HttpEntity<>(body, headers);
-        return restTemplate.exchange(url, method, entity, type);
-    }
-    
-    public BookingDto createBooking(Long roomId, String checkInDate, String checkOutDate, SessionAuth auth) {
-        CreateBookingRequest req = new CreateBookingRequest();
-        req.setRoomId(roomId);
-        req.setCheckInDate(java.time.LocalDate.parse(checkInDate));
-        req.setCheckOutDate(java.time.LocalDate.parse(checkOutDate));
-
-        return post("/api/bookings", req, BookingDto.class, auth);
     }
 
-    public BookingDto[] getMyBookings(SessionAuth auth) {
-        return get("/api/bookings/my", BookingDto[].class, auth);
+    private HttpHeaders headers(SessionAuth auth) {
+        HttpHeaders h = new HttpHeaders();
+        if (auth != null && auth.getToken() != null) {
+            h.set("Authorization", "Bearer " + auth.getToken());
+        }
+        return h;
     }
 }

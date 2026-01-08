@@ -5,8 +5,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "room_images")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RoomImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

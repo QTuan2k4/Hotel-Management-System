@@ -31,8 +31,8 @@ public class UserService {
     private final SecurityJwtProperties jwtProps;
 
     public UserService(UserRepository userRepo, RoleRepository roleRepo,
-                       PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService,
-                       SecurityJwtProperties jwtProps) {
+            PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService,
+            SecurityJwtProperties jwtProps) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.passwordEncoder = passwordEncoder;
@@ -109,6 +109,12 @@ public class UserService {
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role not found: " + r)))
                 .collect(Collectors.toSet());
         user.setRoles(roleSet);
+        return toDto(user);
+    }
+
+    public UserDto getById(Long id) {
+        User user = userRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return toDto(user);
     }
 

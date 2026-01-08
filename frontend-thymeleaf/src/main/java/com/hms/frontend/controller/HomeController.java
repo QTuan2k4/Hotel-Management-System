@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,15 +22,12 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(Model model, HttpSession session,
-                       @RequestParam(required = false) String checkIn,
-                       @RequestParam(required = false) String checkOut) {
+    public String home(Model model, HttpSession session) {
         SessionAuth auth = getAuth(session);
-        RoomDto[] rooms = api.get("/api/rooms", RoomDto[].class, auth);
-        model.addAttribute("rooms", rooms != null ? Arrays.asList(rooms) : List.of());
-        model.addAttribute("checkIn", checkIn);
-        model.addAttribute("checkOut", checkOut);
-        return "index";
+        RoomDto[] roomsArr = api.get("/api/rooms", RoomDto[].class, auth);
+        List<RoomDto> rooms = roomsArr == null ? List.of() : Arrays.asList(roomsArr);
+        model.addAttribute("rooms", rooms);
+        return "home";
     }
 
     @GetMapping("/rooms/{id}")
@@ -39,11 +35,9 @@ public class HomeController {
         SessionAuth auth = getAuth(session);
         RoomDto room = api.get("/api/rooms/" + id, RoomDto.class, auth);
         model.addAttribute("room", room);
-
-        // Images
         Object images = api.get("/api/rooms/" + id + "/images", Object.class, auth);
         model.addAttribute("images", images);
-        return "room-detail";
+        return "rooms/detail";
     }
 
     private SessionAuth getAuth(HttpSession session) {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Payment Result')}"></head>
+
+<body>
+  <div th:replace="~{fragments/nav :: nav}"></div>
+  <div class="container">
+    <div class="card" style="max-width: 500px; margin: 50px auto; text-align: center;">
+      <div th:if="${status == 'success'}">
+        <h1 style="color: #28a745;">✓ Payment Successful!</h1>
+        <p style="margin: 20px 0;">Your payment has been processed successfully.</p>
+        <p>Transaction Reference: <strong th:text="${txnRef}"></strong></p>
+      </div>
+      <div th:unless="${status == 'success'}">
+        <h1 style="color: #dc3545;">✗ Payment Failed</h1>
+        <p style="margin: 20px 0;">There was an issue processing your payment.</p>
+      </div>
+      <a href="/invoices/my" class="btn" style="margin-top: 20px;">View My Invoices</a>
+    </div>
+  </div>
+</body>
+
+</html>

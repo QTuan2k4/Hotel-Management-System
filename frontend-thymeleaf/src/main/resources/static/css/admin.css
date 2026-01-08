@@ -1,0 +1,79 @@
+:root{
+  --bg0:#0b1020;
+  --bg1:#111a33;
+  --card: rgba(255,255,255,.07);
+  --card2: rgba(255,255,255,.10);
+  --stroke: rgba(255,255,255,.12);
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.65);
+  --brand1:#7c3aed; /* violet */
+  --brand2:#06b6d4; /* cyan */
+  --brand3:#22c55e; /* green */
+  --danger:#ef4444;
+  --warn:#f59e0b;
+}
+
+html,body{height:100%}
+body{
+  color: var(--text);
+  background:
+    radial-gradient(1200px 800px at 20% 0%, rgba(124,58,237,.35), transparent 60%),
+    radial-gradient(900px 600px at 85% 10%, rgba(6,182,212,.25), transparent 55%),
+    radial-gradient(1000px 700px at 50% 100%, rgba(34,197,94,.18), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+a{color: rgba(255,255,255,.9)}
+a:hover{color:#fff}
+
+.container-narrow{max-width: 980px}
+
+.glass{
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+.glass-strong{ background: var(--card2); }
+
+.hms-title{
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+
+.hms-sub{ color: var(--muted); }
+
+.btn-brand{
+  border: 0;
+  color: #07101e;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--brand2), var(--brand1));
+}
+.btn-brand:hover{ filter: brightness(1.05); }
+
+.badge-soft{
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.85);
+}
+.badge-ok{ background: rgba(34,197,94,.15); border-color: rgba(34,197,94,.35); }
+.badge-warn{ background: rgba(245,158,11,.15); border-color: rgba(245,158,11,.35); }
+.badge-bad{ background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.35); }
+.badge-info{ background: rgba(6,182,212,.15); border-color: rgba(6,182,212,.35); }
+
+.input-soft, .form-control, .form-select{
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid var(--stroke) !important;
+  color: var(--text) !important;
+}
+.form-control::placeholder{ color: rgba(255,255,255,.45) }
+
+.table thead th{ color: rgba(255,255,255,.75); }
+.table{ color: rgba(255,255,255,.85); }
+.table-striped>tbody>tr:nth-of-type(odd)>*{
+  --bs-table-bg-type: rgba(255,255,255,.03);
+}
+hr{ border-color: rgba(255,255,255,.12); }

@@ -36,21 +36,36 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
 
-        // Only protect /api/**. Frontend pages and actuator are public.
-        if (!path.startsWith("/api/")) return true;
+        // Only protect /api/**
+        if (!path.startsWith("/api/"))
+            return true;
 
         // Public bypasses
-        if (path.equals("/api/auth/login") && "POST".equalsIgnoreCase(method)) return true;
-        if (path.equals("/api/auth/register") && "POST".equalsIgnoreCase(method)) return true;
+        if (path.equals("/api/auth/login") && "POST".equalsIgnoreCase(method))
+            return true;
+        if (path.equals("/api/auth/register") && "POST".equalsIgnoreCase(method))
+            return true;
 
-        if (path.startsWith("/api/rooms/") && "GET".equalsIgnoreCase(method)) return true;
-        if (path.equals("/api/rooms") && "GET".equalsIgnoreCase(method)) return true;
+        if (path.startsWith("/api/rooms/") && "GET".equalsIgnoreCase(method))
+            return true;
+        if (path.equals("/api/rooms") && "GET".equalsIgnoreCase(method))
+            return true;
 
         // health/ping for skeleton services
-        if (path.endsWith("/ping")) return true;
+        if (path.endsWith("/ping"))
+            return true;
 
-        // internal endpoints: protected by internal key (not JWT) for future phases
-        if (path.startsWith("/api/internal/")) return true;
+        // Payment callback - must be public for redirect from payment gateway
+        if (path.startsWith("/api/payments/vnpay/") && "GET".equalsIgnoreCase(method))
+            return true;
+
+        // Booked dates - public endpoint for date picker
+        if (path.startsWith("/api/bookings/booked-dates/") && "GET".equalsIgnoreCase(method))
+            return true;
+
+        // internal endpoints: protected by internal key (not JWT)
+        if (path.startsWith("/api/internal/"))
+            return true;
 
         return false;
     }
@@ -121,7 +136,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private String escapeJson(String s) {
-        if (s == null) return "";
+        if (s == null)
+            return "";
         return s.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('My Invoices')}"></head>
+
+<body>
+  <div th:replace="~{fragments/nav :: nav}"></div>
+  <div class="container">
+    <h1 style="margin: 30px 0;">My Invoices</h1>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div th:if="${#lists.isEmpty(invoices)}" class="card">
+      <p>You have no invoices yet.</p>
+    </div>
+
+    <table th:unless="${#lists.isEmpty(invoices)}" class="card" style="padding: 0;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Booking ID</th>
+          <th>Nights</th>
+          <th>Price/Night</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="inv : ${invoices}">
+          <td th:text="${inv.id}"></td>
+          <td th:text="${inv.bookingId}"></td>
+          <td th:text="${inv.nights}"></td>
+          <td th:text="'$' + ${inv.pricePerNight}"></td>
+          <td th:text="'$' + ${inv.total}"></td>
+          <td>
+            <span class="status" th:classappend="'status-' + ${inv.status.name().toLowerCase()}"
+              th:text="${inv.status}"></span>
+          </td>
+          <td>
+            <form th:if="${inv.status.name() == 'PENDING_PAYMENT'}" th:action="@{/invoices/{id}/pay(id=${inv.id})}"
+              method="post" style="display: inline;">
+              <button type="submit" class="btn btn-success">Pay Now</button>
+            </form>
+            <span th:if="${inv.status.name() == 'PAID'}" style="color: green;">✓ Paid</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

@@ -1,9 +1,10 @@
 package com.hms.common.security;
 
-public final class JwtClaims {
-    private JwtClaims() {}
-
-    public static final String CLAIM_USER_ID = "uid";
-    public static final String CLAIM_USERNAME = "uname";
+public class JwtClaims {
+    public static final String CLAIM_USER_ID = "userId";
+    public static final String CLAIM_USERNAME = "username";
     public static final String CLAIM_ROLES = "roles";
+
+    private JwtClaims() {
+    }
 }

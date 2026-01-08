@@ -4,7 +4,6 @@ import com.hms.auth.service.UserService;
 import com.hms.common.dto.auth.AuthResponse;
 import com.hms.common.dto.auth.LoginRequest;
 import com.hms.common.dto.auth.RegisterRequest;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +18,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
         userService.register(req);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@Valid @RequestBody LoginRequest req) {
+    public AuthResponse login(@RequestBody LoginRequest req) {
         return userService.login(req);
     }
 

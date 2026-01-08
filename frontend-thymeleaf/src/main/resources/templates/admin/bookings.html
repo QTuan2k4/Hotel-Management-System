@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Admin - Bookings')}"></head>
+
+<body>
+  <div th:replace="~{fragments/nav :: nav}"></div>
+  <div class="container">
+    <h1 style="margin: 30px 0;">Manage Bookings</h1>
+    <a href="/admin" style="text-decoration: none;">← Back to Dashboard</a>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <table class="card" style="padding: 0; margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Room</th>
+          <th>User</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="b : ${bookings}">
+          <td th:text="${b.id}"></td>
+          <td th:text="${b.roomId}"></td>
+          <td th:text="${b.userId}"></td>
+          <td th:text="${b.checkInDate}"></td>
+          <td th:text="${b.checkOutDate}"></td>
+          <td>
+            <span class="status" th:classappend="'status-' + ${b.status.name().toLowerCase()}"
+              th:text="${b.status}"></span>
+          </td>
+          <td>
+            <form th:if="${b.status.name() == 'APPROVED' or b.status.name() == 'CONFIRMED'}"
+              th:action="@{/admin/bookings/{id}/checkin(id=${b.id})}" method="post" style="display: inline;">
+              <button type="submit" class="btn btn-warning">Check-in</button>
+            </form>
+            <form th:if="${b.status.name() == 'CHECKED_IN'}" th:action="@{/admin/bookings/{id}/checkout(id=${b.id})}"
+              method="post" style="display: inline;">
+              <button type="submit" class="btn">Check-out</button>
+            </form>
+
+            <!-- Cancel Button -->
+            <div th:if="${b.status.name() == 'CONFIRMED' or b.status.name() == 'APPROVED'}" style="display:inline">
+              <form th:id="'cancel-form-' + ${b.id}" th:action="@{/admin/bookings/{id}/cancel(id=${b.id})}"
+                method="post" style="display:none">
+                <input type="hidden" name="reason" />
+              </form>
+              <button type="button" class="btn btn-danger" th:onclick="'cancelBooking(' + ${b.id} + ')'">Cancel</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function cancelBooking(id) {
+      const reason = prompt("Enter cancellation reason:");
+      if (reason) {
+        const form = document.getElementById('cancel-form-' + id);
+        form.reason.value = reason;
+        form.submit();
+      }
+    }
+  </script>
+</body>
+
+</html>

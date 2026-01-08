@@ -15,7 +15,6 @@ spring:
 
 security:
   jwt:
-    # Must match api-gateway secret!
     secret: "CHANGE_ME_SUPER_SECRET_KEY_32_BYTES_MINIMUM____"
     issuer: "hms"
     ttl-seconds: 7200

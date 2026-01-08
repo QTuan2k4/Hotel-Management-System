@@ -3,7 +3,6 @@ server:
 
 security:
   jwt:
-    # IMPORTANT: change this secret in real projects. Must be >= 32 bytes for HS256.
     secret: "CHANGE_ME_SUPER_SECRET_KEY_32_BYTES_MINIMUM____"
     issuer: "hms"
 

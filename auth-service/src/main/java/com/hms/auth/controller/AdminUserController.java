@@ -4,7 +4,6 @@ import com.hms.auth.dto.SetRolesRequest;
 import com.hms.auth.dto.UserDto;
 import com.hms.auth.service.UserService;
 import com.hms.common.dto.auth.RegisterRequest;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,14 +23,19 @@ public class AdminUserController {
         return userService.listUsers();
     }
 
-    // Create a user (admin)
     @PostMapping
-    public UserDto create(@Valid @RequestBody RegisterRequest req, @RequestParam(defaultValue = "USER") List<String> roles) {
+    public UserDto create(@RequestBody RegisterRequest req,
+            @RequestParam(defaultValue = "USER") List<String> roles) {
         return userService.createUser(req, roles);
     }
 
     @PutMapping("/{id}/roles")
-    public UserDto setRoles(@PathVariable Long id, @Valid @RequestBody SetRolesRequest req) {
+    public UserDto setRoles(@PathVariable Long id, @RequestBody SetRolesRequest req) {
         return userService.setRoles(id, req);
+    }
+
+    @GetMapping("/{id}")
+    public UserDto getById(@PathVariable Long id) {
+        return userService.getById(id);
     }
 }
