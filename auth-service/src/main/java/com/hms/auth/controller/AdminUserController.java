@@ -1,7 +1,7 @@
 package com.hms.auth.controller;
 
 import com.hms.auth.dto.SetRolesRequest;
-import com.hms.auth.dto.UserDto;
+import com.hms.common.dto.UserDto;
 import com.hms.auth.service.UserService;
 import com.hms.common.dto.auth.RegisterRequest;
 import org.springframework.web.bind.annotation.*;

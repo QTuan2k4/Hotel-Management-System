@@ -18,8 +18,10 @@ public class RoomPublicController {
     }
 
     @GetMapping
-    public List<RoomDto> list() {
-        return roomService.listRooms();
+    public List<RoomDto> list(@RequestParam(required = false) String query,
+                              @RequestParam(required = false) String status,
+                              @RequestParam(required = false) String type) {
+        return roomService.listRooms(query, status, type);
     }
 
     @GetMapping("/{id}")
@@ -30,5 +32,10 @@ public class RoomPublicController {
     @GetMapping("/{id}/images")
     public List<RoomImageDto> images(@PathVariable Long id) {
         return roomService.listImages(id);
+    }
+
+    @GetMapping("/types")
+    public List<String> getTypes() {
+        return roomService.getRoomTypes();
     }
 }
