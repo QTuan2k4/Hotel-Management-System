@@ -24,8 +24,12 @@ public class RoomAppService {
         this.imageRepo = imageRepo;
     }
 
-    public List<RoomDto> listRooms() {
-        return roomRepo.findAll().stream().map(this::toDto).toList();
+    public List<String> getRoomTypes() {
+        return roomRepo.findDistinctTypes();
+    }
+
+    public List<RoomDto> listRooms(String query, String status, String type) {
+        return roomRepo.searchRooms(query, status, type).stream().map(this::toDto).toList();
     }
 
     public RoomDto getRoom(Long id) {

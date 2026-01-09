@@ -2,7 +2,7 @@ package com.hms.auth.service;
 
 import com.hms.auth.config.SecurityJwtProperties;
 import com.hms.auth.dto.SetRolesRequest;
-import com.hms.auth.dto.UserDto;
+import com.hms.common.dto.UserDto;
 import com.hms.auth.entity.Role;
 import com.hms.auth.entity.User;
 import com.hms.auth.repository.RoleRepository;
@@ -116,6 +116,29 @@ public class UserService {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return toDto(user);
+    }
+
+    @Transactional
+    public UserDto updateProfile(Long userId, com.hms.common.dto.auth.UpdateProfileRequest req) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setEmail(req.getEmail());
+        // Handle other fields if added later
+        userRepo.save(user);
+        return toDto(user);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, com.hms.common.dto.auth.ChangePasswordRequest req) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        if (!passwordEncoder.matches(req.getOldPassword(), user.getPasswordHash())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid old password");
+        }
+        
+        user.setPasswordHash(passwordEncoder.encode(req.getNewPassword()));
+        userRepo.save(user);
     }
 
     private UserDto toDto(User u) {

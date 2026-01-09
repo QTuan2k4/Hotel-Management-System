@@ -24,11 +24,30 @@ public class AdminRoomController {
     }
 
     @GetMapping
-    public String list(Model model, HttpSession session) {
+    public String list(Model model, HttpSession session, 
+                       @RequestParam(required = false) String query,
+                       @RequestParam(required = false) String status,
+                       @RequestParam(required = false) String type) {
         SessionAuth auth = requireAdmin(session);
-        RoomDto[] rooms = api.get("/api/rooms", RoomDto[].class, auth);
+        
+        StringBuilder url = new StringBuilder("/api/rooms?");
+        if (query != null && !query.isEmpty()) url.append("query=").append(query).append("&");
+        if (status != null && !status.isEmpty()) url.append("status=").append(status).append("&");
+        if (type != null && !type.isEmpty()) url.append("type=").append(type).append("&");
+        
+        RoomDto[] rooms = api.get(url.toString(), RoomDto[].class, auth);
         model.addAttribute("rooms", rooms != null ? Arrays.asList(rooms) : List.of());
         model.addAttribute("auth", auth);
+        
+        // Fetch room types for filter
+        String[] types = api.get("/api/rooms/types", String[].class, auth);
+        model.addAttribute("roomTypes", types != null ? Arrays.asList(types) : List.of());
+        
+        // Add filters to model to keep UI state
+        model.addAttribute("query", query);
+        model.addAttribute("status", status);
+        model.addAttribute("type", type);
+        
         return "admin/room-list";
     }
 
