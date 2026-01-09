@@ -32,7 +32,17 @@ public class RegisterWebController {
         req.setUsername(username);
         req.setPassword(password);
         req.setEmail(email);
-        boolean success = api.postForStatus("/api/auth/register", req, null);
+        boolean success = false;
+        try {
+            success = api.postForStatus("/api/auth/register", req, null);
+        } catch (Exception e) {
+             // Extract message if possible ("Username already exists")
+             String msg = e.getMessage();
+             if (msg == null || msg.isBlank()) msg = "Registration failed. Username may already exist.";
+             
+             ra.addFlashAttribute("error", msg);
+             return "redirect:/register";
+        }
 
         if (!success) {
             ra.addFlashAttribute("error", "Registration failed. Username may already exist.");

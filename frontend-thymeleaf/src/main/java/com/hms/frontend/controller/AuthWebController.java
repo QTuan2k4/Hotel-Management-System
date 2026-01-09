@@ -32,7 +32,13 @@ public class AuthWebController {
             HttpSession session,
             RedirectAttributes ra) {
         LoginRequest req = new LoginRequest(username, password);
-        AuthResponse resp = api.post("/api/auth/login", req, AuthResponse.class, null);
+        AuthResponse resp = null;
+        try {
+            resp = api.post("/api/auth/login", req, AuthResponse.class, null);
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Invalid username or password"); // e.getMessage() might be too technical, safe to default
+            return "redirect:/login";
+        }
 
         if (resp == null || resp.getToken() == null) {
             ra.addFlashAttribute("error", "Invalid username or password");

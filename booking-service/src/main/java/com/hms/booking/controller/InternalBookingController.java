@@ -16,10 +16,12 @@ public class InternalBookingController {
 
     private final BookingRepository repo;
     private final AdminBookingService adminBookingService;
+    private final com.hms.booking.client.NotificationClient notificationClient;
 
-    public InternalBookingController(BookingRepository repo, AdminBookingService adminBookingService) {
+    public InternalBookingController(BookingRepository repo, AdminBookingService adminBookingService, com.hms.booking.client.NotificationClient notificationClient) {
         this.repo = repo;
         this.adminBookingService = adminBookingService;
+        this.notificationClient = notificationClient;
     }
 
     /**
@@ -32,10 +34,35 @@ public class InternalBookingController {
             return ResponseEntity.notFound().build();
         }
 
-        // Only confirm if pending
-        if (b.getStatus() == BookingStatus.PENDING_APPROVAL) {
-            b.setStatus(BookingStatus.CONFIRMED);
-            repo.save(b);
+        // Always ensure confirmed if paid
+        if (b.getStatus() != BookingStatus.CONFIRMED && b.getStatus() != BookingStatus.CHECKED_IN && b.getStatus() != BookingStatus.CHECKED_OUT) {
+             b.setStatus(BookingStatus.CONFIRMED);
+             repo.save(b);
+             
+             // NOTIFY USER
+             try {
+                 notificationClient.notifyUser(
+                     b.getUserId(),
+                     "PAYMENT_RECEIVED",
+                     "Payment Successful!",
+                     "We received your payment. Your booking #" + bookingId + " is now Confirmed.",
+                     b.getId()
+                 );
+             } catch (Exception e) {
+                 System.err.println("Failed to notify user: " + e.getMessage());
+             }
+
+             // NOTIFY ADMIN
+             try {
+                 notificationClient.notifyAdmin(
+                     "PAYMENT_RECEIVED",
+                     "Payment Received",
+                     "Booking #" + bookingId + " has been paid via VNPay.",
+                     b.getId()
+                 );
+             } catch (Exception e) {
+                 System.err.println("Failed to notify admin: " + e.getMessage());
+             }
         }
 
         return ResponseEntity.ok().build();

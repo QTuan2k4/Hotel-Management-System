@@ -44,7 +44,9 @@ public class InAppNotificationService {
                 .referenceId(referenceId)
                 .isRead(false)
                 .build();
-        return repository.save(notification);
+        Notification saved = repository.save(notification);
+        System.out.println("InAppNotificationService: Saved User Notification ID=" + saved.getId() + " for User=" + userId);
+        return saved;
     }
 
     /**

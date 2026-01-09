@@ -80,9 +80,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // Internal endpoints: use X-Internal-Key instead of JWT
-        if (path.startsWith("/api/internal/") ||
-                path.startsWith("/api/notifications")) {
+        // Internal endpoints: use X-Internal-Key
+        // Exception: /api/notifications can also be accessed via JWT (for frontend polling)
+        if (path.startsWith("/api/internal/")) {
             String internalKey = request.getHeader("X-Internal-Key");
             String expected = gatewayProperties.getSecurity().getInternalKey();
 
@@ -93,6 +93,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             writeJson(response, HttpServletResponse.SC_UNAUTHORIZED,
                     "UNAUTHORIZED", "Missing/invalid X-Internal-Key");
             return;
+        }
+
+        // Check for Internal Key first (for Service-to-Service calls like Booking -> Notification)
+        if (path.startsWith("/api/notifications")) {
+            String internalKey = request.getHeader("X-Internal-Key");
+            String expected = gatewayProperties.getSecurity().getInternalKey();
+            if (expected != null && !expected.isBlank() && expected.equals(internalKey)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            // If no internal key, fall through to JWT check below
         }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);

@@ -50,6 +50,16 @@ public class RoomAppService {
         if (roomRepo.existsByCode(dto.getCode())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Room code already exists");
         }
+        if (dto.getName() == null || dto.getName().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room name is required");
+        }
+        if (dto.getType() == null || dto.getType().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room type is required");
+        }
+        if (dto.getPricePerNight() == null || dto.getPricePerNight().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price must be greater than 0");
+        }
+        
         Room r = Room.builder()
                 .code(dto.getCode())
                 .name(dto.getName())
@@ -66,12 +76,19 @@ public class RoomAppService {
     public RoomDto update(Long id, RoomDto dto) {
         Room r = roomRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
-        if (dto.getName() != null)
+        if (dto.getName() != null) {
+            if (dto.getName().isBlank()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room name cannot be empty");
             r.setName(dto.getName());
-        if (dto.getType() != null)
+        }
+        if (dto.getType() != null) {
+            if (dto.getType().isBlank()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room type cannot be empty");
             r.setType(dto.getType());
-        if (dto.getPricePerNight() != null)
+        }
+        if (dto.getPricePerNight() != null) {
+             if (dto.getPricePerNight().compareTo(java.math.BigDecimal.ZERO) <= 0) 
+                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Price must be greater than 0");
             r.setPricePerNight(dto.getPricePerNight());
+        }
         if (dto.getStatus() != null)
             r.setStatus(dto.getStatus());
         if (dto.getDescription() != null)

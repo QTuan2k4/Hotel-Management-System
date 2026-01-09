@@ -58,7 +58,8 @@ public class GatewayApiClient {
             ResponseEntity<T> resp = restTemplate.exchange(url, HttpMethod.POST, entity, responseType);
             return resp.getBody();
         } catch (HttpStatusCodeException e) {
-            return null;
+            String msg = extractErrorMessage(e);
+            throw new RuntimeException(msg);
         }
     }
 
@@ -75,7 +76,7 @@ public class GatewayApiClient {
             ResponseEntity<Void> resp = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
             return resp.getStatusCode().is2xxSuccessful();
         } catch (HttpStatusCodeException e) {
-            return false;
+             throw new RuntimeException(extractErrorMessage(e));
         }
     }
 
@@ -88,7 +89,26 @@ public class GatewayApiClient {
             ResponseEntity<T> resp = restTemplate.exchange(url, HttpMethod.PUT, entity, responseType);
             return resp.getBody();
         } catch (HttpStatusCodeException e) {
-            return null;
+             String msg = extractErrorMessage(e);
+             throw new RuntimeException(msg);
+        }
+    }
+
+    private String extractErrorMessage(HttpStatusCodeException e) {
+        try {
+            // Try to parse Spring Boot default error JSON
+            // {"timestamp":..., "status":400, "error":"...", "message":"THE MESSAGE WE WANT", "path":...}
+            String body = e.getResponseBodyAsString();
+            if (body != null && body.contains("\"message\":\"")) {
+                int start = body.indexOf("\"message\":\"") + 11;
+                int end = body.indexOf("\"", start);
+                if (end > start) {
+                   return body.substring(start, end);
+                }
+            }
+            return e.getMessage(); // Fallback to standard HTTP error
+        } catch (Exception ex) {
+            return e.getMessage();
         }
     }
 
