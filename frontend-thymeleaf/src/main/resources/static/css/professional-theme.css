@@ -1,0 +1,370 @@
+/* Professional Trust Theme for Hotel Management System */
+
+:root {
+    /* Primary Colors */
+    --primary: #0F4C75;
+    --primary-light: #1B6CA8;
+    --primary-dark: #093554;
+
+    /* Accent Colors */
+    --accent: #3282B8;
+    --accent-light: #5AA4D9;
+
+    /* Background Colors */
+    --bg-main: #F8F9FA;
+    --bg-card: #FFFFFF;
+    --bg-sidebar: #0F4C75;
+
+    /* Text Colors */
+    --text-primary: #212529;
+    --text-secondary: #6C757D;
+    --text-light: #FFFFFF;
+    --text-muted: #ADB5BD;
+
+    /* Status Colors - Room */
+    --available: #28A745;
+    --booked: #DC3545;
+    --cleaning: #FFC107;
+    --maintenance: #6C757D;
+
+    /* Status Colors - Booking */
+    --pending: #FFC107;
+    --approved: #17A2B8;
+    --confirmed: #17A2B8;
+    --checked-in: #28A745;
+    --checked-out: #6C757D;
+    --cancelled: #DC3545;
+
+    /* Invoice Status */
+    --pending-payment: #FFC107;
+    --paid: #28A745;
+
+    /* Border */
+    --border-color: #DEE2E6;
+    --border-radius: 8px;
+
+    /* Shadow */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.15);
+}
+
+/* Global Styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+}
+
+/* Custom Navbar */
+.navbar-professional {
+    background-color: var(--primary) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar-professional .navbar-brand {
+    color: var(--text-light) !important;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.navbar-professional .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.2s ease;
+}
+
+.navbar-professional .nav-link:hover {
+    color: var(--text-light) !important;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.navbar-professional .nav-link.active {
+    color: var(--text-light) !important;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: var(--border-radius);
+}
+
+/* Admin Badge */
+.nav-admin-badge {
+    background: linear-gradient(135deg, #FFC107, #FF9800);
+    color: #212529 !important;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0.4rem 0.8rem !important;
+}
+
+.nav-admin-badge:hover {
+    background: linear-gradient(135deg, #FFD54F, #FFB74D);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* Tables */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: var(--primary);
+    color: var(--text-light);
+    font-weight: 600;
+    border: none;
+    padding: 1rem;
+}
+
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(15, 76, 117, 0.03);
+}
+
+/* Status Badges */
+.badge-status {
+    padding: 0.4rem 0.75rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+    border-radius: 20px;
+}
+
+.status-available,
+.badge-available {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #198754;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-booked,
+.badge-booked {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #DC3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.status-cleaning,
+.badge-cleaning {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #856404;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-maintenance,
+.badge-maintenance {
+    background-color: rgba(108, 117, 125, 0.15);
+    color: #6C757D;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.status-pending,
+.badge-pending {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #856404;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-approved,
+.status-confirmed,
+.badge-approved,
+.badge-confirmed {
+    background-color: rgba(23, 162, 184, 0.15);
+    color: #0C6977;
+    border: 1px solid rgba(23, 162, 184, 0.3);
+}
+
+.status-checked_in,
+.badge-checked_in {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #198754;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.status-checked_out,
+.badge-checked_out {
+    background-color: rgba(108, 117, 125, 0.15);
+    color: #6C757D;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.status-cancelled,
+.badge-cancelled {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #DC3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.status-pending_payment,
+.badge-pending_payment {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #856404;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-paid,
+.badge-paid {
+    background-color: rgba(40, 167, 69, 0.15);
+    color: #198754;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: var(--text-light);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-weight: 700;
+}
+
+/* Dashboard Cards */
+.dashboard-stat-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+}
+
+.dashboard-stat-card .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.dashboard-stat-card .stat-label {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+/* Room Cards */
+.room-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+}
+
+.room-card .room-price {
+    color: var(--accent);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Form Styles */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(50, 130, 184, 0.25);
+}
+
+/* Auth Pages */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--accent) 100%);
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-logo {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.auth-title {
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Alert Customization */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+}
+
+/* User Menu */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    color: white;
+}
+
+/* Footer */
+.footer-professional {
+    background-color: var(--primary);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+/* Utilities */
+.text-accent {
+    color: var(--accent);
+}
+
+.bg-accent {
+    background-color: var(--accent);
+}
+
+.border-accent {
+    border-color: var(--accent) !important;
+}

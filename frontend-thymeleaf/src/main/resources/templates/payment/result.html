@@ -5,20 +5,45 @@
 
 <body>
   <div th:replace="~{fragments/nav :: nav}"></div>
-  <div class="container">
-    <div class="card" style="max-width: 500px; margin: 50px auto; text-align: center;">
-      <div th:if="${status == 'success'}">
-        <h1 style="color: #28a745;">✓ Payment Successful!</h1>
-        <p style="margin: 20px 0;">Your payment has been processed successfully.</p>
-        <p>Transaction Reference: <strong th:text="${txnRef}"></strong></p>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card text-center">
+          <div class="card-body py-5">
+            <!-- Success -->
+            <div th:if="${status == 'success'}">
+              <div class="text-success mb-3">
+                <i class="bi bi-check-circle" style="font-size: 4rem;"></i>
+              </div>
+              <h2 class="fw-bold mb-3 text-success">Payment Successful!</h2>
+              <p class="text-muted mb-3">Your payment has been processed successfully.</p>
+              <p class="mb-4">
+                <strong>Transaction Reference:</strong>
+                <span class="badge bg-primary" th:text="${txnRef}"></span>
+              </p>
+            </div>
+
+            <!-- Failed -->
+            <div th:unless="${status == 'success'}">
+              <div class="text-danger mb-3">
+                <i class="bi bi-x-circle" style="font-size: 4rem;"></i>
+              </div>
+              <h2 class="fw-bold mb-3 text-danger">Payment Failed</h2>
+              <p class="text-muted mb-4">There was an issue processing your payment. Please try again.</p>
+            </div>
+
+            <a href="/invoices/my" class="btn btn-primary">
+              <i class="bi bi-receipt me-2"></i>View My Invoices
+            </a>
+          </div>
+        </div>
       </div>
-      <div th:unless="${status == 'success'}">
-        <h1 style="color: #dc3545;">✗ Payment Failed</h1>
-        <p style="margin: 20px 0;">There was an issue processing your payment.</p>
-      </div>
-      <a href="/invoices/my" class="btn" style="margin-top: 20px;">View My Invoices</a>
     </div>
   </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

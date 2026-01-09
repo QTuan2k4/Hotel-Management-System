@@ -27,6 +27,7 @@ public class AdminRoomController {
         SessionAuth auth = requireAdmin(session);
         RoomDto[] rooms = api.get("/api/rooms", RoomDto[].class, auth);
         model.addAttribute("rooms", rooms != null ? Arrays.asList(rooms) : List.of());
+        model.addAttribute("auth", auth);
         return "admin/room-list";
     }
 

@@ -13,8 +13,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+clients:
+  bookingServiceBaseUrl: http://localhost:9002
+
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+

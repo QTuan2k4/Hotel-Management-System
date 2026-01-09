@@ -28,10 +28,13 @@ public class RegisterWebController {
             @RequestParam String password,
             @RequestParam(required = false) String email,
             RedirectAttributes ra) {
-        RegisterRequest req = new RegisterRequest(username, password, email);
-        Object resp = api.post("/api/auth/register", req, Object.class, null);
+        RegisterRequest req = new RegisterRequest();
+        req.setUsername(username);
+        req.setPassword(password);
+        req.setEmail(email);
+        boolean success = api.postForStatus("/api/auth/register", req, null);
 
-        if (resp == null) {
+        if (!success) {
             ra.addFlashAttribute("error", "Registration failed. Username may already exist.");
             return "redirect:/register";
         }

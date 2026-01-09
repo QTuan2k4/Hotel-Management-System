@@ -6,21 +6,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/admin")
-public class AdminDashboardController {
+@RequestMapping("/user")
+public class UserDashboardController {
 
-    @GetMapping
-    public String dashboard(HttpSession session, Model model, RedirectAttributes ra) {
+    @GetMapping("/dashboard")
+    public String dashboard(HttpSession session, Model model) {
         SessionAuth auth = getAuth(session);
-        if (!auth.isLoggedIn() || !auth.isAdmin()) {
-            ra.addFlashAttribute("error", "Admin access required");
+        
+        if (!auth.isLoggedIn()) {
             return "redirect:/login";
         }
+        
+        model.addAttribute("username", auth.getUsername());
         model.addAttribute("auth", auth);
-        return "admin/dashboard";
+        return "user/dashboard";
     }
 
     private SessionAuth getAuth(HttpSession session) {
@@ -28,4 +29,3 @@ public class AdminDashboardController {
         return (v instanceof SessionAuth a) ? a : new SessionAuth();
     }
 }
-

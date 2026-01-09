@@ -34,6 +34,7 @@ public class AdminBookingWebController {
         BookingDto[] arr = api.get("/api/admin/bookings", BookingDto[].class, auth);
         List<BookingDto> bookings = arr == null ? List.of() : Arrays.asList(arr);
         model.addAttribute("bookings", bookings);
+        model.addAttribute("auth", auth);
         return "admin/bookings";
     }
 
@@ -84,6 +85,7 @@ public class AdminBookingWebController {
         InvoiceDto[] arr = api.get("/api/admin/invoices", InvoiceDto[].class, auth);
         List<InvoiceDto> invoices = arr == null ? List.of() : Arrays.asList(arr);
         model.addAttribute("invoices", invoices);
+        model.addAttribute("auth", auth);
         return "admin/invoices";
     }
 

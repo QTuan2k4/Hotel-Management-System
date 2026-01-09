@@ -56,6 +56,23 @@ public class GatewayApiClient {
         }
     }
 
+    /**
+     * POST request that returns true for success (2xx), false for any error.
+     * Use this for endpoints that return empty body on success (like /register).
+     */
+    public <R> boolean postForStatus(String path, R body, SessionAuth auth) {
+        String url = props.getGatewayBaseUrl() + path;
+        HttpHeaders headers = headers(auth);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<R> entity = new HttpEntity<>(body, headers);
+        try {
+            ResponseEntity<Void> resp = restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
+            return resp.getStatusCode().is2xxSuccessful();
+        } catch (HttpStatusCodeException e) {
+            return false;
+        }
+    }
+
     public <T, R> T put(String path, R body, Class<T> responseType, SessionAuth auth) {
         String url = props.getGatewayBaseUrl() + path;
         HttpHeaders headers = headers(auth);

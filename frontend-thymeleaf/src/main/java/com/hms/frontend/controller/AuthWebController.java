@@ -47,7 +47,11 @@ public class AuthWebController {
         auth.setLoggedIn(true);
         session.setAttribute("AUTH", auth);
 
-        return "redirect:/";
+        // Role-based redirect
+        if (auth.isAdmin()) {
+            return "redirect:/admin";
+        }
+        return "redirect:/user/dashboard";
     }
 
     @GetMapping("/logout")
