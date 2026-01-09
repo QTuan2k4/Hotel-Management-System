@@ -1,6 +1,7 @@
 package com.hms.booking.service;
 
 import com.hms.booking.client.BillingClient;
+import com.hms.booking.client.NotificationClient;
 import com.hms.booking.client.RoomClient;
 import com.hms.booking.entity.Booking;
 import com.hms.booking.repository.BookingRepository;
@@ -23,6 +24,7 @@ public class BookingAppService {
     private final BookingRepository bookingRepository;
     private final RoomClient roomClient;
     private final BillingClient billingClient;
+    private final NotificationClient notificationClient;
 
     private static final List<BookingStatus> HOLD_STATUSES = List.of(
             BookingStatus.PENDING_APPROVAL,
@@ -30,10 +32,12 @@ public class BookingAppService {
             BookingStatus.CONFIRMED,
             BookingStatus.CHECKED_IN);
 
-    public BookingAppService(BookingRepository bookingRepository, RoomClient roomClient, BillingClient billingClient) {
+    public BookingAppService(BookingRepository bookingRepository, RoomClient roomClient, 
+                              BillingClient billingClient, NotificationClient notificationClient) {
         this.bookingRepository = bookingRepository;
         this.roomClient = roomClient;
         this.billingClient = billingClient;
+        this.notificationClient = notificationClient;
     }
 
     /**
@@ -95,6 +99,14 @@ public class BookingAppService {
         invoiceReq.setPricePerNight(pricePerNight);
 
         billingClient.createInvoiceFromBooking(invoiceReq);
+
+        // Notify admin about new booking
+        notificationClient.notifyAdmin(
+                "BOOKING_CREATED",
+                "New Booking #" + b.getId(),
+                "Room " + req.getRoomId() + " booked from " + req.getCheckInDate() + " to " + req.getCheckOutDate(),
+                b.getId()
+        );
 
         return toDto(b);
     }

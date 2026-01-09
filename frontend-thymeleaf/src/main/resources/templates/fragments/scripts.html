@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Notification Polling Script Fragment - Include this in pages for notification bell -->
+<th:block th:fragment="notification-scripts">
+    <script th:if="${auth != null and auth.loggedIn}" th:inline="javascript">
+        (function () {
+            const badge = document.getElementById('notificationBadge');
+            const list = document.getElementById('notificationList');
+            const markAllBtn = document.getElementById('markAllRead');
+            const isAdmin = /*[[${auth.admin}]]*/ false;
+
+            if (!badge || !list) {
+                console.log('Notification elements not found');
+                return;
+            }
+
+            function formatTime(dateStr) {
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diff = (now - date) / 1000 / 60;
+                if (diff < 1) return 'Just now';
+                if (diff < 60) return Math.floor(diff) + 'm ago';
+                if (diff < 1440) return Math.floor(diff / 60) + 'h ago';
+                return date.toLocaleDateString();
+            }
+
+            function getIcon(type) {
+                switch (type) {
+                    case 'BOOKING_CREATED': return 'bi-calendar-plus text-primary';
+                    case 'PAYMENT_RECEIVED': return 'bi-cash-coin text-success';
+                    case 'BOOKING_CANCELLED': return 'bi-calendar-x text-danger';
+                    case 'CHECKED_IN': return 'bi-box-arrow-in-right text-success';
+                    case 'CHECKED_OUT': return 'bi-box-arrow-right text-info';
+                    default: return 'bi-bell text-secondary';
+                }
+            }
+
+            function getLink(type) {
+                if (isAdmin) {
+                    switch (type) {
+                        case 'BOOKING_CREATED': return '/admin/bookings';
+                        case 'PAYMENT_RECEIVED': return '/admin/invoices';
+                        default: return '/admin/bookings';
+                    }
+                } else {
+                    switch (type) {
+                        case 'BOOKING_CANCELLED':
+                        case 'CHECKED_IN':
+                        case 'CHECKED_OUT':
+                            return '/bookings/my';
+                        default: return '/user/dashboard';
+                    }
+                }
+            }
+
+            function fetchNotifications() {
+                const endpoint = isAdmin ? '/api/notify/admin' : '/api/notify/user';
+                fetch(endpoint)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('Notifications:', data);
+                        const count = data.unreadCount || 0;
+                        if (count > 0) {
+                            badge.textContent = count > 99 ? '99+' : count;
+                            badge.style.display = 'inline';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+
+                        const notifications = data.notifications || [];
+                        if (notifications.length === 0) {
+                            list.innerHTML = '<div class="text-center text-muted py-3"><i class="bi bi-bell-slash"></i> No notifications</div>';
+                        } else {
+                            list.innerHTML = notifications.slice(0, 10).map(n => `
+                                <a href="${getLink(n.type)}" class="dropdown-item notification-item ${n.read ? '' : 'bg-light'}" 
+                                   onclick="markRead(${n.id})" style="white-space: normal;">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi ${getIcon(n.type)} me-2 mt-1"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-medium">${n.title}</div>
+                                            <small class="text-muted">${n.message || ''}</small>
+                                            <div class="small text-muted mt-1">${formatTime(n.createdAt)}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            `).join('');
+                        }
+                    })
+                    .catch(err => console.log('Notification fetch failed:', err));
+            }
+
+            window.markRead = function (id) {
+                fetch('/api/notify/' + id + '/read', { method: 'POST' });
+            };
+
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const endpoint = isAdmin ? '/api/notify/admin/read-all' : '/api/notify/user/read-all';
+                    fetch(endpoint, { method: 'POST' })
+                        .then(() => fetchNotifications());
+                });
+            }
+
+            // Initial fetch
+            fetchNotifications();
+
+            // Poll every 30 seconds
+            setInterval(fetchNotifications, 30000);
+        })();
+    </script>
+</th:block>
+
+</html>

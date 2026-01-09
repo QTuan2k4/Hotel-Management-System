@@ -48,6 +48,15 @@ public class AdminBookingService {
         b.setCheckedInAt(LocalDateTime.now());
         // No invoice creation here - it's done at booking time
 
+        // Notify user about check-in
+        notificationClient.notifyUser(
+                b.getUserId(),
+                "CHECKED_IN",
+                "Check-in Successful",
+                "You have checked in to Room " + b.getRoomId() + ". Welcome!",
+                b.getId()
+        );
+
         return toDto(b);
     }
 
@@ -59,6 +68,16 @@ public class AdminBookingService {
 
         b.setStatus(BookingStatus.CHECKED_OUT);
         b.setCheckedOutAt(LocalDateTime.now());
+
+        // Notify user about check-out
+        notificationClient.notifyUser(
+                b.getUserId(),
+                "CHECKED_OUT",
+                "Check-out Complete",
+                "You have checked out from Room " + b.getRoomId() + ". Thank you for staying with us!",
+                b.getId()
+        );
+
         return toDto(b);
     }
 
@@ -109,6 +128,15 @@ public class AdminBookingService {
             System.err.println("Failed to send cancellation email: " + e.getMessage());
             e.printStackTrace();
         }
+
+        // Send in-app notification to user
+        notificationClient.notifyUser(
+                b.getUserId(),
+                "BOOKING_CANCELLED",
+                "Booking Cancelled",
+                "Your booking #" + bookingId + " has been cancelled. Reason: " + reason,
+                b.getId()
+        );
 
         return toDto(b);
     }

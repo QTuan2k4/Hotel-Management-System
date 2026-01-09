@@ -77,7 +77,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // Internal endpoints: use X-Internal-Key instead of JWT
-        if (path.startsWith("/api/internal/")) {
+        if (path.startsWith("/api/internal/") || 
+            (path.equals("/api/notifications") && "POST".equalsIgnoreCase(request.getMethod()))) {
             String internalKey = request.getHeader("X-Internal-Key");
             String expected = gatewayProperties.getSecurity().getInternalKey();
 

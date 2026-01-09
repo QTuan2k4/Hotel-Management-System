@@ -20,6 +20,7 @@ public class UserDashboardController {
         }
         
         model.addAttribute("username", auth.getUsername());
+        model.addAttribute("auth", auth);
         return "user/dashboard";
     }
 
