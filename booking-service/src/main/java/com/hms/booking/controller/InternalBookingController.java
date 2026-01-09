@@ -37,4 +37,8 @@ public class InternalBookingController {
 
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/stats/count")
+    public long countAll() {
+        return repo.count();
+    }
 }
