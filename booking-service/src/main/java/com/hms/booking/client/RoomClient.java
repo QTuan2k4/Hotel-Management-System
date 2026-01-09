@@ -40,7 +40,7 @@ public class RoomClient {
                 return resp.getBody().getCode();
             }
         } catch (Exception e) {
-            System.err.println("Failed to get room code: " + e.getMessage());
+            // System.err.println("Failed to get room code: " + e.getMessage());
         }
         return null;
     }

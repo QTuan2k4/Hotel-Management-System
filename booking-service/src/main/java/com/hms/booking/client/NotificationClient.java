@@ -68,9 +68,13 @@ public class NotificationClient {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
 
         try {
+            System.out.println("NotificationClient: Sending In-App Nofitication -> " + url);
+            System.out.println("Payload: RecipientRole=" + recipientRole + ", UserId=" + recipientUserId + ", Title=" + title);
             restTemplate.postForEntity(url, entity, String.class);
+            System.out.println("NotificationClient: Send SUCCESS");
         } catch (Exception e) {
-            System.err.println("Failed to send in-app notification: " + e.getMessage());
+            System.err.println("NotificationClient: Send FAILED: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

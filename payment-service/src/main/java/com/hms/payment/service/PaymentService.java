@@ -80,6 +80,16 @@ public class PaymentService {
       tx.setPaidAt(LocalDateTime.now());
       repo.save(tx);
       billing.markPaid(tx.getInvoiceId());
+      
+      // Confirm booking
+      try {
+          InvoiceDto inv = billing.getInvoice(tx.getInvoiceId());
+          if (inv != null && inv.getBookingId() != null) {
+              bookingClient.confirmBooking(inv.getBookingId());
+          }
+      } catch (Exception e) {
+          System.err.println("Failed to confirm booking after payment success: " + e.getMessage());
+      }
     } else {
       tx.setStatus("FAILED");
       repo.save(tx);

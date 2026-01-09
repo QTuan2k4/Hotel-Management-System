@@ -22,6 +22,25 @@ public class BookingInternalClient {
     }
 
     /**
+     * Confirm booking after payment success
+     */
+    public void confirmBooking(Long bookingId) {
+        String url = gatewayBaseUrl + "/api/internal/bookings/" + bookingId + "/confirm";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Internal-Key", internalKey);
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        try {
+            restTemplate.postForEntity(url, entity, Void.class);
+            System.out.println("Booking " + bookingId + " confirmed after payment success");
+        } catch (Exception e) {
+            System.err.println("Failed to confirm booking " + bookingId + ": " + e.getMessage());
+        }
+    }
+
+    /**
      * Cancel booking due to payment failure
      */
     public void cancelDueToPaymentFailure(Long bookingId) {
