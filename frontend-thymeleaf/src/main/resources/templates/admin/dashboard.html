@@ -16,28 +16,109 @@
       </div>
     </div>
 
+    <!-- Year/Month Filter -->
+    <div class="card mb-4">
+      <div class="card-header bg-white">
+        <form method="get" action="/admin" class="row g-3 align-items-end">
+          <div class="col-auto">
+            <label class="form-label fw-semibold"><i class="bi bi-calendar me-1"></i>Year</label>
+            <select name="year" class="form-select" onchange="this.form.submit()">
+              <option value="">-- All --</option>
+              <option th:each="y : ${yearOptions}" th:value="${y}" th:text="${y}" th:selected="${y == selectedYear}">
+                2026</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <label class="form-label fw-semibold"><i class="bi bi-calendar-month me-1"></i>Month</label>
+            <select name="month" class="form-select" th:disabled="${selectedYear == null}"
+              onchange="this.form.submit()">
+              <option value="">-- All months --</option>
+              <option value="1" th:selected="${selectedMonth == 1}">January</option>
+              <option value="2" th:selected="${selectedMonth == 2}">February</option>
+              <option value="3" th:selected="${selectedMonth == 3}">March</option>
+              <option value="4" th:selected="${selectedMonth == 4}">April</option>
+              <option value="5" th:selected="${selectedMonth == 5}">May</option>
+              <option value="6" th:selected="${selectedMonth == 6}">June</option>
+              <option value="7" th:selected="${selectedMonth == 7}">July</option>
+              <option value="8" th:selected="${selectedMonth == 8}">August</option>
+              <option value="9" th:selected="${selectedMonth == 9}">September</option>
+              <option value="10" th:selected="${selectedMonth == 10}">October</option>
+              <option value="11" th:selected="${selectedMonth == 11}">November</option>
+              <option value="12" th:selected="${selectedMonth == 12}">December</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <a href="/admin" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-counterclockwise me-1"></i>Clear Filter
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
     <div class="row g-4 mb-4">
       <div class="col-md-4">
-        <div class="card bg-primary text-white h-100">
-          <div class="card-body">
-            <h6 class="card-title text-white-50">Total Revenue</h6>
-            <h2 class="display-6 fw-bold" th:text="${stats != null ? stats.totalRevenue : 0} + ' $'">0 $</h2>
+        <div class="card border-0 shadow-sm h-100"
+          style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <div class="card-body text-white">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="text-white-50 mb-2">
+                  <i class="bi bi-cash-coin me-1"></i>Revenue
+                  <span th:if="${selectedYear != null}" class="small">
+                    (<span th:if="${selectedMonth != null}" th:text="${selectedMonth} + '/'"></span><span
+                      th:text="${selectedYear}"></span>)
+                  </span>
+                </h6>
+                <h2 class="display-5 fw-bold mb-0"
+                  th:text="'$' + ${#numbers.formatDecimal(stats != null ? stats.totalRevenue : 0, 0, 'COMMA', 2, 'POINT')}">
+                  $0.00</h2>
+              </div>
+              <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                <i class="bi bi-graph-up-arrow" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card bg-success text-white h-100">
-          <div class="card-body">
-            <h6 class="card-title text-white-50">Total Bookings</h6>
-            <h2 class="display-6 fw-bold" th:text="${stats != null ? stats.totalBookings : 0}">0</h2>
+        <div class="card border-0 shadow-sm h-100"
+          style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+          <div class="card-body text-white">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="text-white-50 mb-2">
+                  <i class="bi bi-calendar-check me-1"></i>Bookings
+                  <span th:if="${selectedYear != null}" class="small">
+                    (<span th:if="${selectedMonth != null}" th:text="${selectedMonth} + '/'"></span><span
+                      th:text="${selectedYear}"></span>)
+                  </span>
+                </h6>
+                <h2 class="display-5 fw-bold mb-0" th:text="${stats != null ? stats.totalBookings : 0}">0</h2>
+              </div>
+              <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                <i class="bi bi-bookmark-star" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div class="col-md-4">
-        <div class="card bg-info text-white h-100">
-          <div class="card-body">
-            <h6 class="card-title text-white-50">Total Rooms</h6>
-            <h2 class="display-6 fw-bold" th:text="${stats != null ? stats.totalRooms : 0}">0</h2>
+        <div class="card border-0 shadow-sm h-100"
+          style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+          <div class="card-body text-white">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="text-white-50 mb-2">
+                  <i class="bi bi-building me-1"></i>Total Rooms
+                </h6>
+                <h2 class="display-5 fw-bold mb-0" th:text="${stats != null ? stats.totalRooms : 0}">0</h2>
+              </div>
+              <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                <i class="bi bi-door-open" style="font-size: 1.5rem;"></i>
+              </div>
+            </div>
           </div>
         </div>
       </div>

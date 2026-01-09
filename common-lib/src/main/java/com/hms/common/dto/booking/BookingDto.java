@@ -14,6 +14,10 @@ public class BookingDto {
     private LocalDateTime createdAt;
     private BigDecimal pricePerNightSnapshot;
 
+    // Display fields (populated by service layer)
+    private String roomCode;
+    private String username;
+
     public BookingDto() {
     }
 
@@ -79,5 +83,21 @@ public class BookingDto {
 
     public void setPricePerNightSnapshot(BigDecimal pricePerNightSnapshot) {
         this.pricePerNightSnapshot = pricePerNightSnapshot;
+    }
+
+    public String getRoomCode() {
+        return roomCode;
+    }
+
+    public void setRoomCode(String roomCode) {
+        this.roomCode = roomCode;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

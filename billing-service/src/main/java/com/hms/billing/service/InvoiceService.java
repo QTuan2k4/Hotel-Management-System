@@ -96,7 +96,30 @@ public class InvoiceService {
     }
 
     public BigDecimal getTotalRevenue() {
-        return repo.sumTotalPaid();
+        BigDecimal result = repo.sumTotalPaid();
+        return result != null ? result : BigDecimal.ZERO;
+    }
+
+    /**
+     * Get revenue by year and optional month (exact calendar dates)
+     */
+    public BigDecimal getRevenueByDate(int year, Integer month) {
+        LocalDateTime startDate;
+        LocalDateTime endDate;
+
+        if (month != null && month >= 1 && month <= 12) {
+            // Filter by specific month
+            java.time.YearMonth yearMonth = java.time.YearMonth.of(year, month);
+            startDate = yearMonth.atDay(1).atStartOfDay();
+            endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+        } else {
+            // Filter by entire year
+            startDate = LocalDateTime.of(year, 1, 1, 0, 0, 0);
+            endDate = LocalDateTime.of(year, 12, 31, 23, 59, 59);
+        }
+
+        BigDecimal result = repo.sumTotalPaidBetween(startDate, endDate);
+        return result != null ? result : BigDecimal.ZERO;
     }
 
     private InvoiceDto toDto(Invoice inv) {

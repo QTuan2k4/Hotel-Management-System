@@ -45,7 +45,7 @@
             <tr th:each="inv : ${invoices}">
               <td class="fw-medium" th:text="${inv.id}"></td>
               <td th:text="${inv.bookingId}"></td>
-              <td th:text="${inv.userId}"></td>
+              <td th:text="${inv.username != null ? inv.username : inv.userId}"></td>
               <td><i class="bi bi-moon me-1 text-muted"></i><span th:text="${inv.nights}"></span></td>
               <td class="fw-bold text-primary">$<span th:text="${inv.total}"></span></td>
               <td>

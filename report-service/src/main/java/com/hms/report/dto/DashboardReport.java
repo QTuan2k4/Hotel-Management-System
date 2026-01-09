@@ -10,5 +10,6 @@ public class DashboardReport {
     private BigDecimal totalRevenue;
     private long totalBookings;
     private long totalRooms;
-    // Add more fields as needed: e.g. bookingsToday, occupiedRooms, etc.
+    private Integer year;
+    private Integer month;
 }

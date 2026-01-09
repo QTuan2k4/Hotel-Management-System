@@ -32,8 +32,8 @@ public class BookingAppService {
             BookingStatus.CONFIRMED,
             BookingStatus.CHECKED_IN);
 
-    public BookingAppService(BookingRepository bookingRepository, RoomClient roomClient, 
-                              BillingClient billingClient, NotificationClient notificationClient) {
+    public BookingAppService(BookingRepository bookingRepository, RoomClient roomClient,
+            BillingClient billingClient, NotificationClient notificationClient) {
         this.bookingRepository = bookingRepository;
         this.roomClient = roomClient;
         this.billingClient = billingClient;
@@ -105,8 +105,7 @@ public class BookingAppService {
                 "BOOKING_CREATED",
                 "New Booking #" + b.getId(),
                 "Room " + req.getRoomId() + " booked from " + req.getCheckInDate() + " to " + req.getCheckOutDate(),
-                b.getId()
-        );
+                b.getId());
 
         return toDto(b);
     }
@@ -134,6 +133,14 @@ public class BookingAppService {
         dto.setStatus(b.getStatus());
         dto.setCreatedAt(b.getCreatedAt());
         dto.setPricePerNightSnapshot(b.getPricePerNightSnapshot());
+
+        // Populate display field
+        try {
+            String roomCode = roomClient.getRoomCode(b.getRoomId());
+            dto.setRoomCode(roomCode);
+        } catch (Exception e) {
+            // ignore
+        }
         return dto;
     }
 }

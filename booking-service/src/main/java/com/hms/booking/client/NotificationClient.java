@@ -25,6 +25,8 @@ public class NotificationClient {
         EmailRequest req = new EmailRequest(to, subject, body);
 
         HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Internal-Key", props.getInternalKey());
+
         HttpEntity<EmailRequest> entity = new HttpEntity<>(req, headers);
         try {
             restTemplate.postForEntity(url, entity, Void.class);
@@ -48,7 +50,7 @@ public class NotificationClient {
     }
 
     private void sendInAppNotification(String recipientRole, Long recipientUserId,
-                                        String type, String title, String message, Long referenceId) {
+            String type, String title, String message, Long referenceId) {
         String url = props.getGatewayBaseUrl() + "/api/notifications";
 
         HttpHeaders headers = new HttpHeaders();
@@ -84,4 +86,3 @@ public class NotificationClient {
         }
     }
 }
-

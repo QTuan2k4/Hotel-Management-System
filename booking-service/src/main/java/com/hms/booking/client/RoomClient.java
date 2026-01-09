@@ -31,4 +31,17 @@ public class RoomClient {
         }
         return BigDecimal.ZERO;
     }
+
+    public String getRoomCode(Long roomId) {
+        String url = props.getGatewayBaseUrl() + "/api/rooms/" + roomId;
+        try {
+            ResponseEntity<RoomDto> resp = restTemplate.getForEntity(url, RoomDto.class);
+            if (resp.getBody() != null && resp.getBody().getCode() != null) {
+                return resp.getBody().getCode();
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to get room code: " + e.getMessage());
+        }
+        return null;
+    }
 }

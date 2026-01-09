@@ -17,7 +17,6 @@ public class ReportService {
     private final RoomClient roomClient;
 
     public DashboardReport getDashboardReport() {
-        // Run sequentially for simplicity, but could be parallelized with CompletableFuture
         long totalBookings = bookingClient.countTotalBookings();
         BigDecimal revenue = billingClient.getTotalRevenue();
         long totalRooms = roomClient.countTotalRooms();
@@ -30,6 +29,24 @@ public class ReportService {
                 .totalBookings(totalBookings)
                 .totalRevenue(revenue)
                 .totalRooms(totalRooms)
+                .build();
+    }
+
+    public DashboardReport getDashboardReportByDate(int year, Integer month) {
+        long bookingsInPeriod = bookingClient.countByDate(year, month);
+        BigDecimal revenueInPeriod = billingClient.getRevenueByDate(year, month);
+        long totalRooms = roomClient.countTotalRooms();
+
+        if (revenueInPeriod == null) {
+            revenueInPeriod = BigDecimal.ZERO;
+        }
+
+        return DashboardReport.builder()
+                .totalBookings(bookingsInPeriod)
+                .totalRevenue(revenueInPeriod)
+                .totalRooms(totalRooms)
+                .year(year)
+                .month(month)
                 .build();
     }
 }

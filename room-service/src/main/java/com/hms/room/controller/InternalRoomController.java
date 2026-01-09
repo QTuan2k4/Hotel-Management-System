@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/internal/rooms")
+@RequestMapping("/api/internal/rooms")
 public class InternalRoomController {
 
     private final RoomRepository repo;

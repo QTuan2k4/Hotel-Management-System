@@ -15,6 +15,9 @@ public class InvoiceDto {
 	private LocalDateTime createdAt;
 	private LocalDateTime paidAt;
 
+	// Display field (populated by service layer)
+	private String username;
+
 	public InvoiceDto() {
 	}
 
@@ -96,5 +99,13 @@ public class InvoiceDto {
 
 	public void setPaidAt(LocalDateTime paidAt) {
 		this.paidAt = paidAt;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

@@ -8,4 +8,6 @@ public class DashboardReportDTO {
     private BigDecimal totalRevenue;
     private long totalBookings;
     private long totalRooms;
+    private Integer year;
+    private Integer month;
 }

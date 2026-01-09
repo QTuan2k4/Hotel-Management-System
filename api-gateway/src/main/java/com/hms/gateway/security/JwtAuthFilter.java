@@ -58,7 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Payment callback - must be public for redirect from payment gateway
         if (path.startsWith("/api/payments/vnpay/") && "GET".equalsIgnoreCase(method))
             return true;
-            
+
         // Public uploaded files (images)
         if (path.startsWith("/api/uploads/") && "GET".equalsIgnoreCase(method))
             return true;
@@ -81,8 +81,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // Internal endpoints: use X-Internal-Key instead of JWT
-        if (path.startsWith("/api/internal/") || 
-            (path.equals("/api/notifications") && "POST".equalsIgnoreCase(request.getMethod()))) {
+        if (path.startsWith("/api/internal/") ||
+                path.startsWith("/api/notifications")) {
             String internalKey = request.getHeader("X-Internal-Key");
             String expected = gatewayProperties.getSecurity().getInternalKey();
 

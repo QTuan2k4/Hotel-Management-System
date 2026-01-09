@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(name = "room-service", url = "${application.config.room-url}")
 public interface RoomClient {
-    
-    @GetMapping("/internal/rooms/stats/count")
+
+    @GetMapping("/api/internal/rooms/stats/count")
     long countTotalRooms();
 }

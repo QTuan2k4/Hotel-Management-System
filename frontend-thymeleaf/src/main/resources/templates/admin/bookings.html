@@ -44,8 +44,8 @@
           <tbody>
             <tr th:each="b : ${bookings}">
               <td class="fw-medium" th:text="${b.id}"></td>
-              <td th:text="${b.roomId}"></td>
-              <td th:text="${b.userId}"></td>
+              <td th:text="${b.roomCode != null ? b.roomCode : b.roomId}"></td>
+              <td th:text="${b.username != null ? b.username : b.userId}"></td>
               <td>
                 <i class="bi bi-calendar-event me-1 text-muted"></i>
                 <span th:text="${b.checkInDate}"></span>

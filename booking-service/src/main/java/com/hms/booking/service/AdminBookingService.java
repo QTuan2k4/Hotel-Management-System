@@ -18,14 +18,17 @@ public class AdminBookingService {
     private final BillingClient billingClient;
     private final com.hms.booking.client.NotificationClient notificationClient;
     private final com.hms.booking.client.UserClient userClient;
+    private final com.hms.booking.client.RoomClient roomClient;
 
     public AdminBookingService(BookingRepository repo, BillingClient billingClient,
             com.hms.booking.client.NotificationClient notificationClient,
-            com.hms.booking.client.UserClient userClient) {
+            com.hms.booking.client.UserClient userClient,
+            com.hms.booking.client.RoomClient roomClient) {
         this.repo = repo;
         this.billingClient = billingClient;
         this.notificationClient = notificationClient;
         this.userClient = userClient;
+        this.roomClient = roomClient;
     }
 
     public List<BookingDto> list(BookingStatus status) {
@@ -54,8 +57,7 @@ public class AdminBookingService {
                 "CHECKED_IN",
                 "Check-in Successful",
                 "You have checked in to Room " + b.getRoomId() + ". Welcome!",
-                b.getId()
-        );
+                b.getId());
 
         return toDto(b);
     }
@@ -75,8 +77,7 @@ public class AdminBookingService {
                 "CHECKED_OUT",
                 "Check-out Complete",
                 "You have checked out from Room " + b.getRoomId() + ". Thank you for staying with us!",
-                b.getId()
-        );
+                b.getId());
 
         return toDto(b);
     }
@@ -118,7 +119,7 @@ public class AdminBookingService {
 
                         Regards,
                         Hotel Management
-                        """, user.getFullName() != null ? user.getFullName() : "Customer", bookingId, reason);
+                        """, user.getUsername() != null ? user.getUsername() : "Customer", bookingId, reason);
 
                 notificationClient.sendEmail(toEmail, subject, body);
             } else {
@@ -135,8 +136,7 @@ public class AdminBookingService {
                 "BOOKING_CANCELLED",
                 "Booking Cancelled",
                 "Your booking #" + bookingId + " has been cancelled. Reason: " + reason,
-                b.getId()
-        );
+                b.getId());
 
         return toDto(b);
     }
@@ -151,6 +151,22 @@ public class AdminBookingService {
         dto.setStatus(b.getStatus());
         dto.setCreatedAt(b.getCreatedAt());
         dto.setPricePerNightSnapshot(b.getPricePerNightSnapshot());
+
+        // Populate display fields
+        try {
+            String roomCode = roomClient.getRoomCode(b.getRoomId());
+            dto.setRoomCode(roomCode);
+        } catch (Exception e) {
+            // ignore
+        }
+        try {
+            var user = userClient.getUserById(b.getUserId());
+            if (user != null) {
+                dto.setUsername(user.getUsername());
+            }
+        } catch (Exception e) {
+            // ignore
+        }
         return dto;
     }
 }

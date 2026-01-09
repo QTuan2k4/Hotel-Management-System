@@ -25,3 +25,9 @@ management:
     web:
       exposure:
         include: health,info
+
+vnpay:
+  url: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+  tmnCode: R2Z4WA60
+  hashSecret: OKTUC610AJCZEXM962OGVOGJRL5Q83EX
+  returnUrl: http://localhost:8081/api/payments/vnpay/return

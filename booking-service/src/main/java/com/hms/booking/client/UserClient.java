@@ -19,37 +19,27 @@ public class UserClient {
     }
 
     public UserDto getUserById(Long id) {
-        // Internal call to admin endpoint (bypass auth or use internal key)
-        String url = props.getGatewayBaseUrl() + "/api/admin/users/" + id;
+        // Use internal endpoint with X-Internal-Key for service-to-service auth
+        String url = props.getGatewayBaseUrl() + "/api/internal/users/" + id;
         HttpHeaders headers = new HttpHeaders();
-        // headers.set("X-Internal-Key", props.getInternalKey()); // If using internal
-        // key
-        // For now, assuming internal network or permissive auth for admin endpoints if
-        // accessed internally
+        headers.set("X-Internal-Key", props.getInternalKey());
 
-        // Actually, since this is calling through Gateway, we need a way to
-        // authenticate.
-        // Or we use direct service-to-service communication if not going through
-        // gateway.
-        // But here we use GatewayBaseUrl.
-        // Let's assume we can fetch it. If not, we iterate.
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
         try {
-            // We need a way to pass admin token or use internal bypass.
-            // For simplicity in this demo, we might fail if not authenticated.
-            // But let's try.
-            return restTemplate.getForObject(url, UserDto.class);
+            return restTemplate.exchange(url, HttpMethod.GET, entity, UserDto.class).getBody();
         } catch (Exception e) {
             System.err.println("Failed to fetch user: " + e.getMessage());
             return null;
         }
     }
 
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown = true)
     public static class UserDto {
         private Long id;
-        private String username; // usually email
+        private String username;
         private String email;
-        private String fullName;
+        private String status;
 
         public Long getId() {
             return id;
@@ -75,12 +65,20 @@ public class UserClient {
             this.email = email;
         }
 
-        public String getFullName() {
-            return fullName;
+        public String getStatus() {
+            return status;
         }
 
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        // For email, use email field or fallback to username
+        public String getEffectiveEmail() {
+            if (email != null && !email.isEmpty()) {
+                return email;
+            }
+            return username;
         }
     }
 }

@@ -37,9 +37,12 @@ public class InternalInvoiceController {
 
     @GetMapping("/stats/revenue")
     public java.math.BigDecimal getRevenue() {
-        return invoiceService.getTotalRevenue(); // Service method needs to be created too? Or just use repo here for speed?
-        // Better to use service. I'll check if I can just inject Repository here or if I should add to service.
-        // The controller injects InvoiceService.
-        // I should add method to InvoiceService.
+        return invoiceService.getTotalRevenue();
+    }
+
+    @GetMapping("/stats/revenue-by-date")
+    public java.math.BigDecimal getRevenueByDate(@RequestParam int year,
+            @RequestParam(required = false) Integer month) {
+        return invoiceService.getRevenueByDate(year, month);
     }
 }
