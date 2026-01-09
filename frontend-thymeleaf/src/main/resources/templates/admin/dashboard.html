@@ -16,6 +16,33 @@
       </div>
     </div>
 
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="card bg-primary text-white h-100">
+          <div class="card-body">
+            <h6 class="card-title text-white-50">Total Revenue</h6>
+            <h2 class="display-6 fw-bold" th:text="${stats != null ? stats.totalRevenue : 0} + ' $'">0 $</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card bg-success text-white h-100">
+          <div class="card-body">
+            <h6 class="card-title text-white-50">Total Bookings</h6>
+            <h2 class="display-6 fw-bold" th:text="${stats != null ? stats.totalBookings : 0}">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card bg-info text-white h-100">
+          <div class="card-body">
+            <h6 class="card-title text-white-50">Total Rooms</h6>
+            <h2 class="display-6 fw-bold" th:text="${stats != null ? stats.totalRooms : 0}">0</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row g-4">
       <!-- Manage Rooms -->
       <div class="col-md-4">

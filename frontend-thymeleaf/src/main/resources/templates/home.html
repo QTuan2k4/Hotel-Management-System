@@ -24,12 +24,20 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <div th:each="room : ${rooms}" class="col">
         <div class="card room-card h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <h5 class="card-title fw-bold mb-0" th:text="${room.name}">Room Name</h5>
-              <span class="badge badge-status" th:classappend="'status-' + ${room.status.toLowerCase()}"
-                th:text="${room.status}">AVAILABLE</span>
+          <!-- Room Cover Image -->
+          <div class="position-relative">
+            <img th:if="${room.coverImageUrl}" th:src="${room.coverImageUrl}" class="card-img-top" alt="Room Image"
+              style="height: 200px; object-fit: cover;">
+            <div th:unless="${room.coverImageUrl}"
+              class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+              <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
             </div>
+            <span class="badge badge-status position-absolute top-0 end-0 m-2"
+              th:classappend="'status-' + ${room.status.toLowerCase()}" th:text="${room.status}">AVAILABLE</span>
+          </div>
+
+          <div class="card-body">
+            <h5 class="card-title fw-bold mb-2" th:text="${room.name}">Room Name</h5>
 
             <div class="mb-3">
               <div class="d-flex align-items-center text-muted mb-1">
@@ -44,9 +52,10 @@
               </div>
             </div>
 
-            <p th:if="${room.description}" class="card-text text-muted small" th:text="${room.description}"></p>
+            <p th:if="${room.description}" class="card-text text-muted small mb-3"
+              th:text="${#strings.abbreviate(room.description, 80)}"></p>
 
-            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+            <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top">
               <div class="room-price">
                 <span>$</span><span th:text="${room.pricePerNight}">100</span>
                 <small class="text-muted fw-normal">/night</small>

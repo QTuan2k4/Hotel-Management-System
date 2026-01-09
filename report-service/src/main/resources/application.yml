@@ -1,8 +1,21 @@
 server:
   port: 9005
 
+spring:
+  application:
+    name: report-service
+  jackson:
+    serialization:
+      indent_output: true
+      
+application:
+  config:
+    booking-url: http://localhost:9002
+    billing-url: http://localhost:9003
+    room-url: http://localhost:9001
+    
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics

@@ -34,4 +34,12 @@ public class InternalInvoiceController {
     public void deleteByBookingId(@PathVariable Long bookingId) {
         invoiceService.deleteByBookingId(bookingId);
     }
+
+    @GetMapping("/stats/revenue")
+    public java.math.BigDecimal getRevenue() {
+        return invoiceService.getTotalRevenue(); // Service method needs to be created too? Or just use repo here for speed?
+        // Better to use service. I'll check if I can just inject Repository here or if I should add to service.
+        // The controller injects InvoiceService.
+        // I should add method to InvoiceService.
+    }
 }

@@ -12,6 +12,44 @@
     </a>
 
     <div class="card">
+      <!-- Image Gallery Section -->
+      <div th:if="${images != null and !#lists.isEmpty(images)}" class="position-relative">
+        <!-- Main Carousel -->
+        <div id="roomImageCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            <button th:each="img, stat : ${images}" type="button" data-bs-target="#roomImageCarousel"
+              th:data-bs-slide-to="${stat.index}" th:class="${stat.first ? 'active' : ''}"
+              th:aria-current="${stat.first ? 'true' : 'false'}">
+            </button>
+          </div>
+          <div class="carousel-inner">
+            <div th:each="img, stat : ${images}" th:class="${stat.first ? 'carousel-item active' : 'carousel-item'}">
+              <img th:src="${img.url}" class="d-block w-100" alt="Room Image" style="height: 550px; object-fit: cover;">
+              <div th:if="${img.cover}" class="position-absolute top-0 start-0 m-3">
+                <span class="badge bg-primary"><i class="bi bi-star-fill me-1"></i>Cover</span>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#roomImageCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#roomImageCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Placeholder when no images -->
+      <div th:unless="${images != null and !#lists.isEmpty(images)}"
+        class="bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+        <div class="text-center text-muted">
+          <i class="bi bi-image" style="font-size: 4rem;"></i>
+          <p class="mt-2 mb-0">No images available</p>
+        </div>
+      </div>
+
       <div class="card-body">
         <div class="row">
           <div class="col-lg-7">

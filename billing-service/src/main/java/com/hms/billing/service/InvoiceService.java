@@ -95,6 +95,10 @@ public class InvoiceService {
         }
     }
 
+    public BigDecimal getTotalRevenue() {
+        return repo.sumTotalPaid();
+    }
+
     private InvoiceDto toDto(Invoice inv) {
         InvoiceDto dto = new InvoiceDto();
         dto.setId(inv.getId());

@@ -32,7 +32,7 @@ public class RouteResolver {
     private String mapModule(String module) {
         return switch (module) {
             case "auth", "users" -> props.getServices().getAuth();
-            case "rooms" -> props.getServices().getRooms();
+            case "rooms", "upload", "uploads" -> props.getServices().getRooms();
             case "bookings" -> props.getServices().getBookings();
             case "invoices" -> props.getServices().getInvoices();
             case "payments" -> props.getServices().getPayments();

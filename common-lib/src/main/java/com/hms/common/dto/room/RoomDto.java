@@ -10,6 +10,7 @@ public class RoomDto {
     private BigDecimal pricePerNight;
     private String status;
     private String description;
+    private String coverImageUrl;
 
     public RoomDto() {
     }
@@ -69,4 +70,13 @@ public class RoomDto {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getCoverImageUrl() {
+        return coverImageUrl;
+    }
+
+    public void setCoverImageUrl(String coverImageUrl) {
+        this.coverImageUrl = coverImageUrl;
+    }
 }
+

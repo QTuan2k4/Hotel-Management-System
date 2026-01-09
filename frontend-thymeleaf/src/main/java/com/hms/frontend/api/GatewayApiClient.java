@@ -2,10 +2,16 @@ package com.hms.frontend.api;
 
 import com.hms.frontend.config.FrontendProperties;
 import com.hms.frontend.session.SessionAuth;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Component
 public class GatewayApiClient {
@@ -97,6 +103,35 @@ public class GatewayApiClient {
         }
     }
 
+    /**
+     * Upload a file via multipart/form-data POST request
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, String> uploadFile(String path, MultipartFile file, SessionAuth auth) {
+        String url = props.getGatewayBaseUrl() + path;
+        HttpHeaders headers = headers(auth);
+        // Do NOT set Content-Type to MULTIPART_FORM_DATA manually. 
+        // RestTemplate will set it automatically with the correct boundary.
+        // headers.setContentType(MediaType.MULTIPART_FORM_DATA); 
+
+        try {
+            // Create multipart body
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("file", new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            });
+
+            HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> resp = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
+            return resp.getBody();
+        } catch (Exception e) {
+            throw new RuntimeException("File upload failed: " + e.getMessage(), e);
+        }
+    }
+
     private HttpHeaders headers(SessionAuth auth) {
         HttpHeaders h = new HttpHeaders();
         if (auth != null && auth.getToken() != null) {
@@ -105,3 +140,4 @@ public class GatewayApiClient {
         return h;
     }
 }
+
