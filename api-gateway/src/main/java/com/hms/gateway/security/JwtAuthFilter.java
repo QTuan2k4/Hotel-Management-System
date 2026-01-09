@@ -58,6 +58,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Payment callback - must be public for redirect from payment gateway
         if (path.startsWith("/api/payments/vnpay/") && "GET".equalsIgnoreCase(method))
             return true;
+            
+        // Public uploaded files (images)
+        if (path.startsWith("/api/uploads/") && "GET".equalsIgnoreCase(method))
+            return true;
 
         // Booked dates - public endpoint for date picker
         if (path.startsWith("/api/bookings/booked-dates/") && "GET".equalsIgnoreCase(method))

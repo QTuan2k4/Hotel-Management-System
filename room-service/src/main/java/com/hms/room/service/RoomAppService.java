@@ -100,6 +100,33 @@ public class RoomAppService {
         return toDto(img);
     }
 
+    @Transactional
+    public void deleteImage(Long roomId, Long imageId) {
+        RoomImage img = imageRepo.findById(imageId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));
+        if (!img.getRoomId().equals(roomId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image does not belong to this room");
+        }
+        imageRepo.delete(img);
+    }
+
+    @Transactional
+    public void setCover(Long roomId, Long imageId) {
+        RoomImage newCover = imageRepo.findById(imageId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));
+        if (!newCover.getRoomId().equals(roomId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image does not belong to this room");
+        }
+        
+        // Remove cover flag from all images of this room
+        List<RoomImage> roomImages = imageRepo.findByRoomIdOrderByCoverDescIdAsc(roomId);
+        roomImages.forEach(img -> img.setCover(false));
+        
+        // Set new cover
+        newCover.setCover(true);
+        imageRepo.saveAll(roomImages);
+    }
+
     private RoomDto toDto(Room r) {
         RoomDto dto = new RoomDto();
         dto.setId(r.getId());
@@ -109,6 +136,13 @@ public class RoomAppService {
         dto.setPricePerNight(r.getPricePerNight());
         dto.setStatus(r.getStatus());
         dto.setDescription(r.getDescription());
+        
+        // Get cover image URL
+        List<RoomImage> images = imageRepo.findByRoomIdOrderByCoverDescIdAsc(r.getId());
+        if (!images.isEmpty()) {
+            dto.setCoverImageUrl(images.get(0).getUrl()); // First image is cover (sorted by cover desc)
+        }
+        
         return dto;
     }
 

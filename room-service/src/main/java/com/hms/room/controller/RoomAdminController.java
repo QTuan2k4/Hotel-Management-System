@@ -6,6 +6,8 @@ import com.hms.room.service.RoomAppService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/rooms")
 public class RoomAdminController {
@@ -32,8 +34,26 @@ public class RoomAdminController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{id}/images")
+    public List<RoomImageDto> listImages(@PathVariable Long id) {
+        return roomService.listImages(id);
+    }
+
     @PostMapping("/{id}/images")
     public RoomImageDto addImage(@PathVariable Long id, @RequestBody RoomImageDto dto) {
         return roomService.addImage(id, dto);
     }
+
+    @DeleteMapping("/{roomId}/images/{imageId}")
+    public ResponseEntity<?> deleteImage(@PathVariable Long roomId, @PathVariable Long imageId) {
+        roomService.deleteImage(roomId, imageId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{roomId}/images/{imageId}/set-cover")
+    public ResponseEntity<?> setCover(@PathVariable Long roomId, @PathVariable Long imageId) {
+        roomService.setCover(roomId, imageId);
+        return ResponseEntity.ok().build();
+    }
 }
+

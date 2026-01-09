@@ -18,7 +18,8 @@ public class RoomImage {
     @Column(nullable = false)
     private Long roomId;
 
-    @Column(nullable = false, length = 500)
+    @Lob
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String url;
 
     @Column(nullable = false)
