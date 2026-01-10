@@ -16,6 +16,42 @@
       </div>
     </div>
 
+    <!-- Filter Form -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <form action="/" method="get" class="row g-3">
+          <div class="col-md-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" name="type">
+              <option value="">All Types</option>
+              <option th:each="t : ${roomTypes}" th:value="${t}" th:text="${t}" th:selected="${t == selectedType}">
+              </option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label for="minPrice" class="form-label">Min Price</label>
+            <input type="number" class="form-control" id="minPrice" name="minPrice" th:value="${minPrice}" min="0"
+              step="10000">
+          </div>
+          <div class="col-md-2">
+            <label for="maxPrice" class="form-label">Max Price</label>
+            <input type="number" class="form-control" id="maxPrice" name="maxPrice" th:value="${maxPrice}" min="0"
+              step="10000">
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <div class="d-grid gap-2 d-md-block w-100">
+              <button type="submit" class="btn btn-primary me-md-2">
+                <i class="bi bi-filter me-1"></i>Filter
+              </button>
+              <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Clear
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div th:if="${#lists.isEmpty(rooms)}" class="alert alert-info">
       <i class="bi bi-info-circle me-2"></i>
       No rooms available at the moment. Please check back later.

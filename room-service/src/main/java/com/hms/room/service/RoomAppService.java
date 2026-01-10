@@ -28,8 +28,8 @@ public class RoomAppService {
         return roomRepo.findDistinctTypes();
     }
 
-    public List<RoomDto> listRooms(String query, String status, String type) {
-        return roomRepo.searchRooms(query, status, type).stream().map(this::toDto).toList();
+    public List<RoomDto> listRooms(String query, String status, String type, java.math.BigDecimal minPrice, java.math.BigDecimal maxPrice) {
+        return roomRepo.searchRooms(query, status, type, minPrice, maxPrice).stream().map(this::toDto).toList();
     }
 
     public RoomDto getRoom(Long id) {
