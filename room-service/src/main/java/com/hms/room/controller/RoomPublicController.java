@@ -20,8 +20,10 @@ public class RoomPublicController {
     @GetMapping
     public List<RoomDto> list(@RequestParam(required = false) String query,
                               @RequestParam(required = false) String status,
-                              @RequestParam(required = false) String type) {
-        return roomService.listRooms(query, status, type);
+                              @RequestParam(required = false) String type,
+                              @RequestParam(required = false) java.math.BigDecimal minPrice,
+                              @RequestParam(required = false) java.math.BigDecimal maxPrice) {
+        return roomService.listRooms(query, status, type, minPrice, maxPrice);
     }
 
     @GetMapping("/{id}")

@@ -22,11 +22,35 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(Model model, HttpSession session) {
+    public String home(@org.springframework.web.bind.annotation.RequestParam(required = false) String query,
+                       @org.springframework.web.bind.annotation.RequestParam(required = false) String type,
+                       @org.springframework.web.bind.annotation.RequestParam(required = false) Double minPrice,
+                       @org.springframework.web.bind.annotation.RequestParam(required = false) Double maxPrice,
+                       Model model, HttpSession session) {
         SessionAuth auth = getAuth(session);
-        RoomDto[] roomsArr = api.get("/api/rooms", RoomDto[].class, auth);
+        
+        // Build query string
+        StringBuilder url = new StringBuilder("/api/rooms?status=AVAILABLE");
+        if (query != null && !query.isBlank()) url.append("&query=").append(query);
+        if (type != null && !type.isBlank()) url.append("&type=").append(type);
+        if (minPrice != null) url.append("&minPrice=").append(minPrice);
+        if (maxPrice != null) url.append("&maxPrice=").append(maxPrice);
+        
+        RoomDto[] roomsArr = api.get(url.toString(), RoomDto[].class, auth);
         List<RoomDto> rooms = roomsArr == null ? List.of() : Arrays.asList(roomsArr);
+        
+        // Fetch room types for filter dropdown
+        String[] typesArr = api.get("/api/rooms/types", String[].class, auth);
+        List<String> types = typesArr == null ? List.of() : Arrays.asList(typesArr);
+        
         model.addAttribute("rooms", rooms);
+        model.addAttribute("roomTypes", types);
+        // Pass filter values back to view
+        model.addAttribute("query", query);
+        model.addAttribute("selectedType", type);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        
         return "home";
     }
 
